@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Best Charades vs ActivityNet Recipe: Mathematical Differences</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fa;
+      --paper: #ffffff;
+      --ink: #17202a;
+      --muted: #5d6a76;
+      --line: #d9e0e7;
+      --accent: #0f766e;
+      --accent-soft: #e7f5f3;
+      --code-bg: #101820;
+      --code-ink: #ecf5f3;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.58;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 42px 24px 64px;
+    }
+
+    article {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 34px;
+      box-shadow: 0 10px 28px rgba(23, 32, 42, 0.06);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      line-height: 1.16;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 34px 0 12px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-size: 23px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 24px 0 10px;
+      font-size: 18px;
+      letter-spacing: 0;
+      color: #123f3b;
+    }
+
+    p {
+      margin: 10px 0 14px;
+    }
+
+    .date {
+      color: var(--muted);
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    .summary {
+      background: var(--accent-soft);
+      border-left: 4px solid var(--accent);
+      padding: 16px 18px;
+      border-radius: 6px;
+      margin: 18px 0 26px;
+    }
+
+    code {
+      font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.94em;
+      background: #eef2f5;
+      padding: 0.12em 0.34em;
+      border-radius: 4px;
+    }
+
+    pre {
+      margin: 14px 0 18px;
+      overflow-x: auto;
+      background: var(--code-bg);
+      color: var(--code-ink);
+      border-radius: 8px;
+      padding: 16px 18px;
+      font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      font-size: 14px;
+      line-height: 1.48;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border-radius: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 22px;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 9px 10px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: #eef3f5;
+      color: #25313b;
+      font-weight: 650;
+    }
+
+    td.num,
+    th.num {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    ul {
+      margin: 10px 0 18px 22px;
+      padding: 0;
+    }
+
+    li {
+      margin: 7px 0;
+    }
+
+    .recipe {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 12px;
+    }
+
+    .recipe section {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: #fbfcfd;
+    }
+
+    .recipe h3 {
+      margin-top: 0;
+    }
+
+    .callout {
+      border: 1px solid #a7d7d1;
+      background: #f1fbf9;
+      color: #163b37;
+      border-radius: 8px;
+      padding: 15px 17px;
+      margin: 18px 0;
+    }
+
+    @media (max-width: 760px) {
+      main {
+        padding: 18px 12px 34px;
+      }
+
+      article {
+        padding: 20px 14px;
+      }
+
+      h1 {
+        font-size: 27px;
+      }
+
+      .recipe {
+        grid-template-columns: 1fr;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <article>
+      <h1>Best Charades vs Best ActivityNet Recipe: Mathematical Differences</h1>
+      <p class="date">Date: 2026-05-12</p>
+
+      <p>This note compares the current best confirmed Charades recipe with the current best confirmed ActivityNet recipe:</p>
+      <ul>
+        <li>Charades: <code>experiments/cycle12/46_charades_final_alpha06_maxend_confirm/01_candidate_alpha0.6_maxend0.35</code></li>
+        <li>ActivityNet: <code>experiments/cycle14/19_activitynet_exact_compat_full_cand08_k12_gamma090_argmax050</code></li>
+      </ul>
+
+      <div class="summary">
+        The short version: Charades wins with a modern, regularized stack: hybrid token scoring, dynamic onset weighting, quality-degradation negatives, contrastive proposal scoring, and modern dynamic refinement. ActivityNet wins with a simpler exact-notebook-compatible path: hard token max, no negatives, no beta, exact v0 static proposal scoring, notebook start-shift compatibility, fewer final candidates, and a strong argmax proposal bonus.
+      </div>
+
+      <h2>Results</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Dataset</th>
+            <th>Run</th>
+            <th class="num">Scope</th>
+            <th class="num">mIoU</th>
+            <th class="num">R@0.3</th>
+            <th class="num">R@0.5</th>
+            <th class="num">R@0.7</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Charades</td>
+            <td><code>01_candidate_alpha0.6_maxend0.35</code></td>
+            <td class="num">full</td>
+            <td class="num">47.98</td>
+            <td class="num">71.51</td>
+            <td class="num">52.85</td>
+            <td class="num">28.71</td>
+          </tr>
+          <tr>
+            <td>ActivityNet</td>
+            <td><code>00_cand08_k12_gamma090_argmax050</code></td>
+            <td class="num">full</td>
+            <td class="num">37.41</td>
+            <td class="num">53.07</td>
+            <td class="num">28.74</td>
+            <td class="num">15.92</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Parameter Diff</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Charades Best</th>
+            <th>ActivityNet Best</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>alpha</code></td><td>0.6</td><td>0.0</td><td>Charades uses hybrid hard/soft token scoring; ActivityNet bypasses hybrid scoring.</td></tr>
+          <tr><td><code>temp</code></td><td>0.03</td><td>0.0</td><td>Charades uses LSE soft token pooling; ActivityNet uses exact hard max.</td></tr>
+          <tr><td><code>beta</code></td><td>0.25</td><td>0.0</td><td>Charades uses dynamic onset weighting; ActivityNet disables it.</td></tr>
+          <tr><td><code>scoring_type</code></td><td><code>contrastive</code></td><td><code>v00_static</code></td><td>Charades uses generalized contrastive proposal scoring; ActivityNet uses exact notebook static scoring.</td></tr>
+          <tr><td><code>gamma</code></td><td>0.2</td><td>0.9</td><td>Charades uses lower score-alignment gamma; ActivityNet uses stronger geometry-voting gamma from the confirmed sweep.</td></tr>
+          <tr><td><code>prior</code></td><td>0.5</td><td>1.0</td><td>Charades limits max proposal length to half the video; ActivityNet allows full-video-length proposals.</td></tr>
+          <tr><td><code>cand_num</code></td><td>12</td><td>8</td><td>ActivityNet best keeps fewer candidates before final voting.</td></tr>
+          <tr><td><code>kmeans_k</code></td><td>12</td><td>12</td><td>Both current best recipes use 12 clusters.</td></tr>
+          <tr><td><code>argmax_bonus_alpha</code></td><td>0.1</td><td>0.5</td><td>ActivityNet relies much more on boosting proposals containing the timeline argmax.</td></tr>
+          <tr><td><code>use_quality_degradation_negatives</code></td><td>true</td><td>false</td><td>Charades uses CVD/TID quality negatives; ActivityNet best explicitly does not.</td></tr>
+          <tr><td><code>quality_neg_alpha</code></td><td>0.15</td><td>inactive</td><td>Charades subtracts quality-negative evidence from the timeline.</td></tr>
+          <tr><td><code>enable_dynamic_refinement</code></td><td>true</td><td>false</td><td>Charades uses modern dynamic refinement; ActivityNet disables it.</td></tr>
+          <tr><td><code>v00_start_refinement_compat</code></td><td>absent/false</td><td>true</td><td>ActivityNet keeps the notebook's start-only refinement compatibility block.</td></tr>
+          <tr><td><code>dynamic_refinement_max_end_ratio</code></td><td>0.35</td><td>inactive / 0.5 configured</td><td>Charades caps modern end expansion more tightly.</td></tr>
+          <tr><td><code>cluster_feature_source</code></td><td>default/current</td><td><code>normalized</code></td><td>ActivityNet exact path clusters notebook-normalized selected token features.</td></tr>
+          <tr><td><code>v00_round_proposal_scores</code></td><td>absent/default modern path</td><td>true</td><td>ActivityNet rounds proposal scores like the notebook.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Timeline Scoring</h2>
+      <p>Let <code>x_{n,p}</code> be the video token feature at frame <code>n</code> and token <code>p</code>, and let <code>q_m</code> be text query feature <code>m</code>.</p>
+      <pre><code>u_{m,n,p} = q_m dot x_{n,p}</code></pre>
+
+      <h3>Charades: Hybrid Token Score</h3>
+      <p>Charades uses <code>alpha=0.6</code>, <code>temp=0.03</code>, so each frame gets a mixture of hard max and log-sum-exp token pooling:</p>
+      <pre><code>h_{m,n} = max_p u_{m,n,p}
+lse_{m,n} = tau * log(sum_p exp(u_{m,n,p} / tau))
+s_{m,n}^{hybrid} = alpha * h_{m,n} + (1 - alpha) * lse_{m,n}
+
+s_{m,n}^{Charades} = 0.6 * h_{m,n} + 0.4 * lse_{m,n},  tau = 0.03</code></pre>
+
+      <p>Then Charades applies quality-negative suppression:</p>
+      <pre><code>qneg_{n,k} = max_p (z_k dot x_{n,p})
+w_{n,k} = softmax_k(qneg_{n,k} / tau_neg)
+Q_n = sum_k w_{n,k} * qneg_{n,k}
+s_n' = s_n - lambda_Q * Q_n
+
+lambda_Q = 0.15
+quality_neg_preset = cvd2014_tid2013
+quality_neg_aggregation = softmax</code></pre>
+
+      <p>Finally, Charades uses dynamic onset weighting with <code>beta=0.25</code>:</p>
+      <pre><code>s_n'' = s_n' * (1 + beta * onset_n)
+
+Charades: beta = 0.25
+ActivityNet: beta = 0.0</code></pre>
+
+      <h3>ActivityNet: Exact Notebook Hard Max</h3>
+      <p>ActivityNet has <code>alpha=0.0</code> and <code>temp=0.0</code>, so the code bypasses hybrid token scoring:</p>
+      <pre><code>s_{m,n}^{AN} = max_p u_{m,n,p}</code></pre>
+      <p>There are no quality negatives and no dynamic onset weighting:</p>
+      <pre><code>Q_n = 0
+beta = 0
+s_n^{AN-final} = s_n^{AN}</code></pre>
+
+      <h2>Proposal Scoring</h2>
+      <p>For a candidate span <code>[a,b)</code>, define:</p>
+      <pre><code>L = b - a
+I(a,b) = mean_{n in [a,b)} s_n
+O(a,b) = mean_{n not in [a,b)} s_n</code></pre>
+
+      <h3>Charades: Generalized Contrastive Score</h3>
+      <pre><code>score_{base}(a,b) = I(a,b) - beta_c * max(O_raw(a,b), O_floor)</code></pre>
+      <p>Here <code>beta_c = contrastive_beta = 1.0</code>, and <code>O_floor</code> is the global outer floor derived from low-scoring frames. Charades also rejects spans longer than half the video:</p>
+      <pre><code>b - a &lt;= prior * N = 0.5N</code></pre>
+
+      <h3>ActivityNet: Exact v0 Static Score</h3>
+      <pre><code>score_{v00}(a,b) = I(a,b) - O(a,b)</code></pre>
+      <p>No outer floor is applied in this exact path. Then the winning ActivityNet run applies the argmax-containing proposal multiplier:</p>
+      <pre><code>score_{AN}(a,b) =
+  round(score_{v00}(a,b) * (1 + 0.5 * 1[argmax(s) in [a,b)]), 4)</code></pre>
+      <p>The max-length prior is:</p>
+      <pre><code>b - a &lt;= 1.0N</code></pre>
+
+      <h2>Clustering And Candidate Geometry</h2>
+      <p>Both best recipes use:</p>
+      <pre><code>kmeans_k = 12
+temporal_window_size = 21
+window_radius = 7
+mask_thr = 0.2</code></pre>
+      <table>
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>Charades</th>
+            <th>ActivityNet</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Cluster feature source</td><td>modern/default selected features</td><td>notebook-normalized selected token features</td></tr>
+          <tr><td>Candidate count</td><td>12</td><td>8</td></tr>
+          <tr><td>Length prior</td><td>0.5</td><td>1.0</td></tr>
+          <tr><td>Proposal score</td><td>generalized contrastive</td><td>exact v00 static</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Refinement</h2>
+      <h3>Charades: Modern Dynamic Refinement</h3>
+      <pre><code>enable_dynamic_refinement = true
+dynamic_refinement_mode = both
+dynamic_refinement_start_behavior = expand_only
+dynamic_refinement_end_behavior = expand_only
+dynamic_refinement_max_end_ratio = 0.35</code></pre>
+      <p>Conceptually, for each proposal <code>[a,b)</code>, the refinement step considers nearby boundary variants:</p>
+      <pre><code>(a', b') in R(a,b)</code></pre>
+
+      <h3>ActivityNet: Notebook Start-Only Compatibility</h3>
+      <pre><code>enable_dynamic_refinement = false
+v00_start_refinement_compat = true
+v00_start_refinement_ths = 0.0005</code></pre>
+      <p>Conceptually, only the proposal start is shifted left to the dynamic segment boundary:</p>
+      <pre><code>a' = left_boundary(a),  b' = b</code></pre>
+
+      <h2>Voting</h2>
+      <p>Both use <code>voting_method: original</code>. Given proposals <code>p_i = [a_i,b_i]</code> with nonnegative proposal weights <code>w_i</code>, the original voting score is:</p>
+      <pre><code>V_i = sum_j IoU(p_i, p_j)^gamma_nms * max(w_j, 0)
+
+gamma_nms = 0.6
+prediction = argmax_i V_i</code></pre>
+      <p>Important naming note: this <code>nms_gamma=0.6</code> is the voting exponent. It is different from the top-level <code>gamma</code> used earlier in score alignment / Box-Cox-style processing:</p>
+      <pre><code>Charades top-level gamma = 0.2
+ActivityNet top-level gamma = 0.9
+Both nms_gamma = 0.6</code></pre>
+
+      <h2>Diagnostic Difference</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Diagnostic</th>
+            <th class="num">Charades</th>
+            <th class="num">ActivityNet</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Top-1 mIoU</td><td class="num">47.98</td><td class="num">37.41</td></tr>
+          <tr><td>Oracle top-5 mIoU</td><td class="num">60.19</td><td class="num">50.50</td></tr>
+          <tr><td>Ranking loss</td><td class="num">12.21</td><td class="num">13.09</td></tr>
+          <tr><td>Main poor-sample issue</td><td>ranking/proposal gap remains</td><td>proposal generation dominates poor samples</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Practical Takeaway</h2>
+      <div class="callout">
+        Do not blindly port the Charades best stack to ActivityNet.
+      </div>
+
+      <div class="recipe">
+        <section>
+          <h3>Charades Best</h3>
+          <pre><code>hybrid alpha/temp
++ beta onset
++ quality negatives
++ contrastive scoring
++ modern dynamic refinement
++ prior=0.5</code></pre>
+        </section>
+        <section>
+          <h3>ActivityNet Best</h3>
+          <pre><code>exact v00 hard max
++ normalized clustering
++ v00 static scoring
++ notebook start shift
++ cand_num=8
++ kmeans_k=12
++ gamma=0.9
++ argmax_bonus_alpha=0.5
++ no negatives
++ no modern refinement</code></pre>
+        </section>
+      </div>
+
+      <p>The shared lesson is not "use the same modules." The shared lesson is that each dataset wants a different bias:</p>
+      <ul>
+        <li>Charades wants precision shaping and boundary regularization.</li>
+        <li>ActivityNet wants exact notebook signal geometry plus a compact candidate set and strong argmax-centered proposal ranking.</li>
+      </ul>
+    </article>
+  </main>
+</body>
+</html>
