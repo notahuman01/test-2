@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BREAKTHROUGH METRIC CLAIM OPTIONS</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #fbfaf7;
+  --paper: #ffffff;
+  --ink: #202124;
+  --muted: #5f6368;
+  --line: #dedad2;
+  --accent: #365c8d;
+  --accent-soft: #e8f0fe;
+  --code-bg: #f5f2ec;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.65;
+}
+main {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 48px 28px 80px;
+}
+article {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 42px;
+  box-shadow: 0 18px 60px rgba(32, 33, 36, 0.07);
+}
+h1, h2, h3, h4 { line-height: 1.2; margin: 1.7em 0 0.65em; color: #171717; }
+h1 { margin-top: 0; font-size: clamp(2rem, 5vw, 3.1rem); letter-spacing: 0; }
+h2 { border-top: 1px solid var(--line); padding-top: 1.2em; font-size: 1.65rem; }
+h3 { font-size: 1.22rem; color: var(--accent); }
+p { margin: 0.85em 0; }
+a { color: var(--accent); }
+ul, ol { padding-left: 1.5rem; }
+li { margin: 0.25em 0; }
+blockquote {
+  margin: 1.2em 0;
+  padding: 0.8em 1.1em;
+  border-left: 4px solid var(--accent);
+  background: var(--accent-soft);
+  color: #1f3554;
+}
+code {
+  background: var(--code-bg);
+  padding: 0.14em 0.34em;
+  border-radius: 4px;
+  font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.92em;
+}
+pre {
+  overflow-x: auto;
+  background: #1f2430;
+  color: #f7f7f7;
+  padding: 1rem;
+  border-radius: 8px;
+  line-height: 1.45;
+}
+pre code { background: transparent; padding: 0; color: inherit; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 0.95rem;
+}
+th, td {
+  border: 1px solid var(--line);
+  padding: 0.58rem 0.7rem;
+  vertical-align: top;
+}
+th { background: #f2efe8; text-align: left; }
+tr:nth-child(even) td { background: #fcfbf8; }
+.mermaid {
+  margin: 1.2em 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  overflow-x: auto;
+}
+.doc-meta {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-bottom: 1.4rem;
+}
+@media (max-width: 720px) {
+  main { padding: 24px 12px 56px; }
+  article { padding: 24px 16px; border-radius: 8px; }
+  table { display: block; overflow-x: auto; }
+}
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid var(--line, #d9e0e7);
+  backdrop-filter: blur(10px);
+}
+.site-nav__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.site-nav__brand {
+  flex: 0 0 auto;
+  color: var(--ink, #17202a);
+  font-weight: 750;
+  text-decoration: none;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.site-nav__links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 auto;
+  gap: 8px;
+  min-width: 0;
+}
+.site-nav__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 7px 11px;
+  border-radius: 8px;
+  color: var(--muted, #5d6a76);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.site-nav__links a:hover,
+.site-nav__links a:focus-visible {
+  background: var(--accent-soft, #e7f5f3);
+  color: var(--accent, #0f766e);
+  outline: none;
+}
+.site-nav__links a[aria-current="page"] {
+  background: var(--accent-soft, #e7f5f3);
+  color: var(--accent, #0f766e);
+}
+@media (max-width: 760px) {
+  .site-nav__inner {
+    padding: 10px 12px;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .site-nav__links {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+  }
+  .site-nav__links a {
+    min-height: 36px;
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+}
+
+</style>
+<script>
+window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'default' });
+</script>
+</head>
+<body>
+<nav class="site-nav" aria-label="Document navigation">
+  <div class="site-nav__inner">
+    <a class="site-nav__brand" href="index.html">Cycle16 Docs</a>
+    <div class="site-nav__links">
+      <a href="index.html">Home</a>
+      <a href="BEST_CHARADES_VS_ACTIVITYNET_RECIPE_MATH.html">Recipe Math</a>
+      <a href="BREAKTHROUGH_METRIC_CLAIM_OPTIONS.html" aria-current="page">Breakthrough Claims</a>
+      <a href="Derivation_Pipeline_cycle16_aligned.html">Cycle16 Pipeline</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+<article>
+<div class="doc-meta">Generated from BREAKTHROUGH METRIC CLAIM OPTIONS markdown.</div>
+<h1>Cycle16 Breakthrough Claim Options Against TAG Baseline</h1>
+<p>Purpose: define stronger, targeted claim options by comparing cycle16 directly against the TAG baseline pipeline described in <code>analysis/0_Deep_Dive/Derivation_Raw_Similarity.md</code>.</p>
+<p>Scope: these are claims against the TAG zero-shot / no-LLM / no-training baseline. Do not claim external SOTA unless separately verified.</p>
+<h2>Baseline Pipeline Reference</h2>
+<p>The baseline TAG derivation has this active flow:</p>
+<ol>
+<li>1. BLIP-2/Q-Former video features \(F \in \mathbb{R}^{T \times 32 \times 256}\).</li>
+<li>2. Anchor text query vector \(q\).</li>
+<li>3. Token cosine matrix \(S_{i,j} = \hat{f}_{i,j}^{T}q\).</li>
+<li>4. Hard max raw timeline:</li>
+</ol>
+<p>$$ s_i = \max_j S_{i,j} $$</p>
+<ol>
+<li>5. Winning-token index selection:</li>
+</ol>
+<p>$$ j_i^* = \arg\max_j S_{i,j} $$</p>
+<ol>
+<li>6. Raw winning token features for clustering:</li>
+</ol>
+<p>$$ f_{i,j_i^<em>} = F[i,j_i^</em>,:] $$</p>
+<ol>
+<li>7. Temporal pooling, masking, Box-Cox, TCKMeans proposal generation.</li>
+<li>8. Static inner-minus-outer proposal scoring:</li>
+</ol>
+<p>$$ S_p = \text{mean}(a_{inside}) - \text{mean}(a_{outside}) $$</p>
+<ol>
+<li>9. Dynamic boundary refinement as a start-boundary correction bridge.</li>
+<li>10. Consensus voting / Soft-NMS-style proposal selection.</li>
+</ol>
+<p>Cycle16 keeps the strong TAG spine, but replaces four decision points: timeline weighting, proposal representation/scoring, refinement behavior, and voting.</p>
+<h2>Baseline Vs Cycle16 Metrics</h2>
+<h3>Charades-STA</h3>
+<table>
+<thead><tr><th>Method</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th><th>mIoU</th></tr></thead>
+<tbody>
+<tr><td>TAG baseline, zero-shot, no LLM</td><td>67.82</td><td>48.58</td><td>26.67</td><td>45.69</td></tr>
+<tr><td>Cycle16 aligned family1</td><td><strong>70.11</strong></td><td><strong>52.31</strong></td><td><strong>28.79</strong></td><td><strong>47.63</strong></td></tr>
+<tr><td>Delta</td><td><strong>+2.29</strong></td><td><strong>+3.73</strong></td><td><strong>+2.12</strong></td><td><strong>+1.94</strong></td></tr>
+</tbody></table>
+<h3>ActivityNet Captions</h3>
+<table>
+<thead><tr><th>Method</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th><th>mIoU</th></tr></thead>
+<tbody>
+<tr><td>TAG baseline, zero-shot, no LLM</td><td>51.88</td><td>28.91</td><td>15.07</td><td>36.55</td></tr>
+<tr><td>Cycle16 aligned family1</td><td><strong>53.93</strong></td><td><strong>29.62</strong></td><td><strong>16.09</strong></td><td><strong>37.85</strong></td></tr>
+<tr><td>Delta</td><td><strong>+2.05</strong></td><td><strong>+0.71</strong></td><td><strong>+1.02</strong></td><td><strong>+1.30</strong></td></tr>
+</tbody></table>
+<h2>Shared Cycle16 Parameters</h2>
+<pre><code class="language-yaml">alpha: 0.0
+temp: 0.0
+scoring_type: cohens_d
+cluster_feature_source: normalized
+v00_start_refinement_compat: false
+enable_dynamic_refinement: true
+dynamic_refinement_mode: both
+dynamic_refinement_ths: 0.002
+dynamic_refinement_max_end_ratio: 0.35
+voting_method: da_nms
+onset_gradient_mode: positive
+onset_norm_mode: percentile
+onset_norm_percentile: 95.0
+onset_smooth_kernel: 5
+onset_gate_mode: confidence_contrast
+onset_gate_strength: 1.0
+onset_gate_kernel: 7
+onset_gate_norm_percentile: 95.0
+onset_renorm_after_gate: false</code></pre>
+<p>Dataset-native numeric strengths:</p>
+<table>
+<thead><tr><th>Parameter</th><th>ActivityNet</th><th>Charades</th></tr></thead>
+<tbody>
+<tr><td><code>beta</code></td><td>0.10</td><td>0.35</td></tr>
+<tr><td><code>gamma</code></td><td>0.9</td><td>0.2</td></tr>
+<tr><td><code>prior</code></td><td>1.0</td><td>0.5</td></tr>
+<tr><td><code>cand_num</code></td><td>8</td><td>12</td></tr>
+<tr><td><code>argmax_bonus_alpha</code></td><td>0.50</td><td>0.10</td></tr>
+</tbody></table>
+<h2>Option 1: Raw Timeline Upgrade</h2>
+<p>Best when introducing the onset contribution.</p>
+<h3>Baseline</h3>
+<p>The baseline raw timeline is a hard max over visual tokens:</p>
+<p>$$ s_i = \max_j S_{i,j} $$</p>
+<p>This is simple and strong, but it treats a flat confident plateau and a rising action onset the same if their absolute similarity is equal.</p>
+<h3>Cycle16 Upgrade</h3>
+<p>Cycle16 keeps the hard max timeline but applies a confidence-gated rising-edge multiplier:</p>
+<p>$$ s_i&#x27; = s_i \left(1 + \beta \cdot g_i^{+} \cdot h_i^{conf-contrast}\right) $$</p>
+<p>where:</p>
+<ul>
+<li>- \(g_i^{+}\) is the positive temporal gradient only.</li>
+<li>- \(h_i^{conf-contrast}\) is high only when the frame is both confident and locally above its neighborhood.</li>
+</ul>
+<p>Core parameters:</p>
+<pre><code class="language-yaml">beta: 0.10 / 0.35
+onset_gradient_mode: positive
+onset_norm_percentile: 95.0
+onset_smooth_kernel: 5
+onset_gate_mode: confidence_contrast</code></pre>
+<p>Claim wording:</p>
+<blockquote>
+<p>We preserve TAG&#x27;s hard-max raw similarity timeline but make it boundary-aware: cycle16 amplifies only confident, locally contrastive rising edges before masking and proposal generation. This turns the baseline \(s_i=\max_j S_{i,j}\) into an onset-sensitive timeline while retaining the zero-shot/no-LLM TAG spine.</p>
+</blockquote>
+<p>Metric attachment:</p>
+<blockquote>
+<p>This aligned onset path contributes to a +1.94 mIoU gain on Charades-STA and +1.30 mIoU on ActivityNet Captions over the TAG baseline.</p>
+</blockquote>
+<h2>Option 2: Clustering Representation Upgrade</h2>
+<p>Best when explaining why cycle16 keeps hard tokens but changes proposal geometry.</p>
+<h3>Baseline</h3>
+<p>The baseline selects the winning token index:</p>
+<p>$$ j_i^* = \arg\max_j S_{i,j} $$</p>
+<p>Then it clusters the corresponding raw, unnormalized feature:</p>
+<p>$$ f_{i,j_i^<em>} = F[i,j_i^</em>,:] $$</p>
+<p>The baseline rationale is that raw magnitude may help clustering.</p>
+<h3>Cycle16 Upgrade</h3>
+<p>Cycle16 still uses the same winning token index, but clusters normalized winning-token features:</p>
+<p>$$ z_i = \frac{f_{i,j_i^<em>}}{\|f_{i,j_i^</em>}\|_2} $$</p>
+<p>Then time is appended and temporal pooling is applied as usual:</p>
+<p>$$ u_i = [z_i, i/T] $$</p>
+<p>Core parameters:</p>
+<pre><code class="language-yaml">cluster_feature_source: normalized
+temporal_window_size: 21
+window_radius: 7
+kmeans_k: 12</code></pre>
+<p>Claim wording:</p>
+<blockquote>
+<p>Cycle16 keeps TAG&#x27;s exact hard-token selection but changes the clustering representation from raw token magnitude to normalized semantic direction. This makes temporal clustering depend less on feature norm artifacts and more on semantic consistency through time.</p>
+</blockquote>
+<p>Metric attachment:</p>
+<blockquote>
+<p>Under the full aligned recipe, this representation contributes to improvements on every reported Charades-STA and ActivityNet metric.</p>
+</blockquote>
+<h2>Option 3: Proposal Scoring Upgrade</h2>
+<p>Best when explaining Cohen&#x27;s d.</p>
+<h3>Baseline</h3>
+<p>The baseline proposal score is raw inner-minus-outer contrast:</p>
+<p>$$ S_p = \mu_{inside} - \mu_{outside} $$</p>
+<p>This rewards proposals whose inside average is higher than the outside average, but it does not account for score variance.</p>
+<h3>Cycle16 Upgrade</h3>
+<p>Cycle16 uses Cohen&#x27;s d effect size:</p>
+<p>$$ S_p^{cycle16} = \frac{\mu_{inside} - \mu_{outside}}{\sigma_{pooled} + \epsilon} $$</p>
+<p>The proposal is not just rewarded for a higher inside mean; it is rewarded when the inside/outside separation is large relative to the distribution spread.</p>
+<p>Core parameters:</p>
+<pre><code class="language-yaml">scoring_type: cohens_d
+argmax_bonus_alpha: 0.50 / 0.10
+alpha: 0.0
+temp: 0.0</code></pre>
+<p>Claim wording:</p>
+<blockquote>
+<p>Cycle16 replaces TAG&#x27;s raw inner-minus-outer proposal score with an effect-size score. Cohen&#x27;s d asks whether a proposal is statistically separated from its temporal context, not merely whether its inside average is higher.</p>
+</blockquote>
+<p>Metric attachment:</p>
+<blockquote>
+<p>The final aligned effect-size lane improves R@0.5 by +3.73 on Charades-STA and +0.71 on ActivityNet Captions over the TAG baseline.</p>
+</blockquote>
+<h2>Option 4: Refinement Upgrade</h2>
+<p>Best when explaining the boundary logic.</p>
+<h3>Baseline</h3>
+<p>The baseline derivation describes dynamic boundary refinement as a start-boundary bridge:</p>
+<p>$$ P^{(9)} \rightarrow P^{(10)} = \{(t_i&#x27;, t_j, S_{p_i})\} $$</p>
+<p>That is, it primarily moves the start boundary toward an earlier dynamic segment while keeping the end boundary unchanged.</p>
+<h3>Cycle16 Upgrade</h3>
+<p>Cycle16 disables the old v00 start-only compatibility path and enables modern two-sided refinement:</p>
+<pre><code class="language-yaml">v00_start_refinement_compat: false
+enable_dynamic_refinement: true
+dynamic_refinement_mode: both
+dynamic_refinement_ths: 0.002
+dynamic_refinement_max_end_ratio: 0.35</code></pre>
+<p>The proposal can expand at both start and end. End expansion is capped:</p>
+<p>$$ \Delta e \le 0.35|p| $$</p>
+<p>Claim wording:</p>
+<blockquote>
+<p>Cycle16 upgrades TAG&#x27;s refinement bridge from start-only correction to controlled two-sided boundary expansion. This preserves the dynamic-boundary idea from the baseline, but applies it symmetrically and avoids stacking the old v00 start-shift with modern refinement.</p>
+</blockquote>
+<p>Metric attachment:</p>
+<blockquote>
+<p>The aligned recipe improves strict R@0.7 by +2.12 on Charades-STA and +1.02 on ActivityNet Captions over the TAG baseline.</p>
+</blockquote>
+<h2>Option 5: Voting Upgrade</h2>
+<p>Best when explaining final proposal selection.</p>
+<h3>Baseline</h3>
+<p>The baseline voting description is consensus-based:</p>
+<p>$$ \hat{S}_j = \sum_i \text{IoU}(p_i,p_j)^\gamma S_i $$</p>
+<p>This rewards agreement among overlapping proposals.</p>
+<h3>Cycle16 Upgrade</h3>
+<p>Cycle16 selects with DA-NMS:</p>
+<p>$$ \hat{S}_j = \sum_i \text{IoU}(p_i,p_j)^\gamma S_i D_i^{\alpha_D} $$</p>
+<p>where \(D_i\) is the internal proposal density and \(\alpha_D\) controls how strongly density affects voting power.</p>
+<p>In plain terms, a proposal should not get full voting strength just because it overlaps many other proposals. It should also be internally compact: the frames inside the proposal should contain consistently high action evidence, not just one sharp peak surrounded by weak background. DA-NMS adds this density term to distinguish tight action spans from wide, diluted spans.</p>
+<p>The density term can be understood as:</p>
+<p>$$ D_i \approx \frac{\text{mean action score inside }p_i}{\text{max action score inside }p_i} $$</p>
+<p>So:</p>
+<ul>
+<li>- \(D_i \approx 1\): the proposal is dense; most frames inside it are strongly action-like.</li>
+<li>- \(D_i \ll 1\): the proposal is diluted; it may contain one good peak but too much weak/background context.</li>
+</ul>
+<p>The exponent \(\alpha_D\) is the density strength:</p>
+<p>$$ D_i^{\alpha_D} $$</p>
+<ul>
+<li>- \(\alpha_D = 0\): density has no effect, because \(D_i^0 = 1\). This collapses back toward ordinary overlap voting.</li>
+<li>- \(\alpha_D = 1\): density is applied directly. A proposal with density \(0.5\) gets half voting power.</li>
+<li>- \(\alpha_D &gt; 1\): density becomes stricter. A proposal with density \(0.5\) and \(\alpha_D=2\) gets \(0.25\) voting power.</li>
+</ul>
+<p>Cycle16 uses the code default:</p>
+<p>$$ \alpha_D = 1.0 $$</p>
+<p>This means DA-NMS applies a direct, interpretable density penalty without making the voting stage too aggressive.</p>
+<p>Core parameters:</p>
+<pre><code class="language-yaml">voting_method: da_nms
+nms_gamma: 0.6
+da_nms_alpha: 1.0
+scoring_type: cohens_d</code></pre>
+<p>Claim wording:</p>
+<blockquote>
+<p>Cycle16 upgrades TAG&#x27;s consensus selection with density-aware voting. Proposals still vote through temporal overlap, but low-density spans lose influence, reducing the chance that broad background-heavy boxes dominate the final prediction.</p>
+</blockquote>
+<p>Metric attachment:</p>
+<blockquote>
+<p>Under the aligned DA-NMS lane, all 8 reported metrics improve across Charades-STA and ActivityNet Captions versus the TAG baseline.</p>
+</blockquote>
+<h2>Recommended Main Claim</h2>
+<p>Use this as the best overall phrasing:</p>
+<blockquote>
+<p>Cycle16 preserves TAG&#x27;s zero-shot hard-max similarity spine, then upgrades four downstream decisions: confident rising-edge onset weighting, normalized winning-token clustering, Cohen&#x27;s d effect-size proposal scoring, two-sided dynamic refinement, and DA-NMS density-aware voting. With the same active module path on Charades-STA and ActivityNet Captions, it improves every reported TAG baseline metric without training, fine-tuning, or LLM assistance.</p>
+</blockquote>
+<p>Short version:</p>
+<blockquote>
+<p>Cycle16 is not a replacement for TAG&#x27;s raw similarity baseline; it is a targeted upgrade to it. It keeps the hard-max BLIP-2/Q-Former timeline and improves the boundary, proposal, scoring, refinement, and voting decisions around that timeline.</p>
+</blockquote>
+<h2>Avoid Saying</h2>
+<p>Avoid these unless externally verified:</p>
+<ul>
+<li>- &quot;State of the art on Charades-STA.&quot;</li>
+<li>- &quot;State of the art on ActivityNet Captions.&quot;</li>
+<li>- &quot;Best zero-shot method overall.&quot;</li>
+<li>- &quot;SOTA over all no-training systems.&quot;</li>
+</ul>
+<p>Safer wording:</p>
+<ul>
+<li>- &quot;New best TAG zero-shot/no-LLM aligned architecture.&quot;</li>
+<li>- &quot;Breakthrough over the TAG zero-shot/no-training baseline.&quot;</li>
+<li>- &quot;Best aligned TAG architecture found so far.&quot;</li>
+</ul>
+</article>
+</main>
+</body>
+</html>

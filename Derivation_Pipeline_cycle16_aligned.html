@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Derivation Pipeline cycle16 aligned</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #fbfaf7;
+  --paper: #ffffff;
+  --ink: #202124;
+  --muted: #5f6368;
+  --line: #dedad2;
+  --accent: #365c8d;
+  --accent-soft: #e8f0fe;
+  --code-bg: #f5f2ec;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.65;
+}
+main {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 48px 28px 80px;
+}
+article {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 42px;
+  box-shadow: 0 18px 60px rgba(32, 33, 36, 0.07);
+}
+h1, h2, h3, h4 { line-height: 1.2; margin: 1.7em 0 0.65em; color: #171717; }
+h1 { margin-top: 0; font-size: clamp(2rem, 5vw, 3.1rem); letter-spacing: 0; }
+h2 { border-top: 1px solid var(--line); padding-top: 1.2em; font-size: 1.65rem; }
+h3 { font-size: 1.22rem; color: var(--accent); }
+p { margin: 0.85em 0; }
+a { color: var(--accent); }
+ul, ol { padding-left: 1.5rem; }
+li { margin: 0.25em 0; }
+blockquote {
+  margin: 1.2em 0;
+  padding: 0.8em 1.1em;
+  border-left: 4px solid var(--accent);
+  background: var(--accent-soft);
+  color: #1f3554;
+}
+code {
+  background: var(--code-bg);
+  padding: 0.14em 0.34em;
+  border-radius: 4px;
+  font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.92em;
+}
+pre {
+  overflow-x: auto;
+  background: #1f2430;
+  color: #f7f7f7;
+  padding: 1rem;
+  border-radius: 8px;
+  line-height: 1.45;
+}
+pre code { background: transparent; padding: 0; color: inherit; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 0.95rem;
+}
+th, td {
+  border: 1px solid var(--line);
+  padding: 0.58rem 0.7rem;
+  vertical-align: top;
+}
+th { background: #f2efe8; text-align: left; }
+tr:nth-child(even) td { background: #fcfbf8; }
+.mermaid {
+  margin: 1.2em 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  overflow-x: auto;
+}
+.doc-meta {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-bottom: 1.4rem;
+}
+@media (max-width: 720px) {
+  main { padding: 24px 12px 56px; }
+  article { padding: 24px 16px; border-radius: 8px; }
+  table { display: block; overflow-x: auto; }
+}
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid var(--line, #d9e0e7);
+  backdrop-filter: blur(10px);
+}
+.site-nav__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.site-nav__brand {
+  flex: 0 0 auto;
+  color: var(--ink, #17202a);
+  font-weight: 750;
+  text-decoration: none;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.site-nav__links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 auto;
+  gap: 8px;
+  min-width: 0;
+}
+.site-nav__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 7px 11px;
+  border-radius: 8px;
+  color: var(--muted, #5d6a76);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.site-nav__links a:hover,
+.site-nav__links a:focus-visible {
+  background: var(--accent-soft, #e7f5f3);
+  color: var(--accent, #0f766e);
+  outline: none;
+}
+.site-nav__links a[aria-current="page"] {
+  background: var(--accent-soft, #e7f5f3);
+  color: var(--accent, #0f766e);
+}
+@media (max-width: 760px) {
+  .site-nav__inner {
+    padding: 10px 12px;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .site-nav__links {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+  }
+  .site-nav__links a {
+    min-height: 36px;
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+}
+
+</style>
+<script>
+window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'default' });
+</script>
+</head>
+<body>
+<nav class="site-nav" aria-label="Document navigation">
+  <div class="site-nav__inner">
+    <a class="site-nav__brand" href="index.html">Cycle16 Docs</a>
+    <div class="site-nav__links">
+      <a href="index.html">Home</a>
+      <a href="BEST_CHARADES_VS_ACTIVITYNET_RECIPE_MATH.html">Recipe Math</a>
+      <a href="BREAKTHROUGH_METRIC_CLAIM_OPTIONS.html">Breakthrough Claims</a>
+      <a href="Derivation_Pipeline_cycle16_aligned.html" aria-current="page">Cycle16 Pipeline</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+<article>
+<div class="doc-meta">Generated from Derivation Pipeline cycle16 aligned markdown.</div>
+<h1>TAG Cycle16 Aligned Pipeline Derivation</h1>
+<p>This document derives the active pipeline used by the cycle16 aligned ActivityNet/Charades architecture.</p>
+<p>It is intentionally slimmer than <code>analysis/deep_analysis_v0.5.2/Derivation_Pipeline_v0.5.2.md</code>: only modules that are active in the cycle16 YAMLs are included. Template ensembles, semantic negatives, quality negatives, query decomposition, boundary prompts, hybrid token softness, legacy v00 start refinement, WBF, PSS, adaptive gamma/k, and OOD padding are not part of this architecture.</p>
+<p>Source configs:</p>
+<ul>
+<li>- <code>experiments/cycle16/config_cycle16_activitynet_family1_aligned_confcontrast.yaml</code></li>
+<li>- <code>experiments/cycle16/config_cycle16_charades_family1_aligned_confcontrast.yaml</code></li>
+</ul>
+<h2>0. Active Recipe</h2>
+<p>The shared architecture is:</p>
+<pre><code class="language-yaml">alpha: 0.0
+temp: 0.0
+scoring_type: cohens_d
+voting_method: da_nms
+cluster_feature_source: normalized
+v00_start_refinement_compat: false
+enable_dynamic_refinement: true
+dynamic_refinement_mode: both
+dynamic_refinement_ths: 0.002
+dynamic_refinement_max_end_ratio: 0.35
+onset_gradient_mode: positive
+onset_norm_mode: percentile
+onset_norm_percentile: 95.0
+onset_smooth_kernel: 5
+onset_gate_mode: confidence_contrast
+onset_gate_strength: 1.0
+onset_gate_kernel: 7
+onset_gate_norm_percentile: 95.0
+onset_renorm_after_gate: false</code></pre>
+<p>Dataset-native numbers:</p>
+<table>
+<thead><tr><th>Parameter</th><th>ActivityNet</th><th>Charades</th></tr></thead>
+<tbody>
+<tr><td><code>gamma</code></td><td>0.9</td><td>0.2</td></tr>
+<tr><td><code>prior</code></td><td>1.0</td><td>0.5</td></tr>
+<tr><td><code>cand_num</code></td><td>8</td><td>12</td></tr>
+<tr><td><code>kmeans_k</code></td><td>12</td><td>12</td></tr>
+<tr><td><code>argmax_bonus_alpha</code></td><td>0.50</td><td>0.10</td></tr>
+<tr><td><code>beta</code></td><td>0.10</td><td>0.35</td></tr>
+</tbody></table>
+<p>Confirmed source results:</p>
+<table>
+<thead><tr><th>Dataset</th><th>Source Run</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr></thead>
+<tbody>
+<tr><td>ActivityNet Captions</td><td><code>cycle15/21/01_rise_confcontrast_beta0100</code></td><td><strong>37.85</strong></td><td>53.93</td><td>29.62</td><td>16.09</td></tr>
+<tr><td>Charades-STA</td><td><code>cycle15/20/19_hard_rise_confcontrast_beta035</code></td><td><strong>47.63</strong></td><td>70.11</td><td>52.31</td><td>28.79</td></tr>
+</tbody></table>
+<h2>1. Pipeline Graph</h2>
+<div class="mermaid">flowchart TD
+  classDef input fill:#fff2cc,stroke:#d6b656,stroke-width:2px;
+  classDef active fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px;
+  classDef key fill:#e8dcf5,stroke:#6a0dad,stroke-width:3px;
+  classDef output fill:#d5e8d4,stroke:#82b366,stroke-width:2px;
+
+  F[Video features F: T x 32 x 256]:::input
+  Q[Raw query y]:::input
+  TE[Anchor text encoding and L2 norm]:::active
+  VN[Visual token L2 norm]:::active
+  SIM[Token cosine matrix S_i,j]:::active
+  HARD[Hard max token timeline s_i = max_j S_i,j]:::key
+  ONSET[Positive gated onset weighting]:::key
+  MASK[Threshold mask + mask cleanup]:::active
+  BOX[Box-Cox alignment adjustment]:::active
+  ARG[Argmax token selection]:::active
+  CLUST[Normalized token smoothing + temporal K-Means]:::key
+  PROP[Cluster proposal generation]:::active
+  SCORE[Cohen&#x27;s d proposal scoring + argmax bonus]:::key
+  REFINE[Modern dynamic start/end refinement]:::key
+  VOTE[DA-NMS density-aware voting]:::key
+  OUT[Final temporal segment]:::output
+
+  Q --&gt; TE
+  F --&gt; VN
+  TE --&gt; SIM
+  VN --&gt; SIM
+  SIM --&gt; HARD
+  HARD --&gt; ONSET
+  ONSET --&gt; MASK
+  MASK --&gt; BOX
+  SIM --&gt; ARG
+  ARG --&gt; CLUST
+  MASK --&gt; CLUST
+  CLUST --&gt; PROP
+  BOX --&gt; SCORE
+  PROP --&gt; SCORE
+  SCORE --&gt; REFINE
+  REFINE --&gt; VOTE
+  VOTE --&gt; OUT</div>
+<h2>2. Text And Visual Encoding</h2>
+<p>The input query is encoded directly as one anchor embedding:</p>
+<p>$$ q = \frac{\text{TextEncoder}(y)}{\|\text{TextEncoder}(y)\|_2} $$</p>
+<p>No boundary prompts are active, so there is no separate start/end text track. No template ensemble or synonym averaging is active in this path.</p>
+<p>For each video frame \(i\), BLIP-2/Q-Former features provide 32 visual tokens:</p>
+<p>$$ F_i = \{f_{i,1}, f_{i,2}, \dots, f_{i,32}\}, \quad f_{i,j} \in \mathbb{R}^{256} $$</p>
+<p>Each token is normalized:</p>
+<p>$$ \hat{f}_{i,j} = \frac{f_{i,j}}{\|f_{i,j}\|_2} $$</p>
+<p>The token-query cosine matrix is:</p>
+<p>$$ S_{i,j} = \hat{f}_{i,j}^{\top} q $$</p>
+<h2>3. Hard Token Timeline</h2>
+<p>Because <code>alpha: 0.0</code> and <code>temp: 0.0</code>, the hybrid token selector is bypassed. The active timeline is the exact hard maximum over the 32 visual tokens:</p>
+<p>$$ s_i = \max_j S_{i,j} $$</p>
+<p>This is important for alignment: ActivityNet and Charades now share the same hard-token path. The earlier Charades hybrid-softness story is removed from the final aligned architecture.</p>
+<h2>4. Positive Gated Onset Weighting</h2>
+<p>The cycle16 onset module does not use the old absolute-gradient onset. It uses rising-only gradients:</p>
+<p>$$ g_i = \max(s_i - s_{i-1}, 0) $$</p>
+<p>The gradient is padded back to length \(T\), then smoothed by a width-5 box filter:</p>
+<p>$$ \tilde{g}_i = \frac{1}{5}\sum_{r=-2}^{2} g_{i+r} $$</p>
+<p>It is normalized by the 95th percentile:</p>
+<p>$$ \bar{g}_i = \text{clip}\left(\frac{\tilde{g}_i}{Q_{0.95}(\tilde{g})}, 0, 1\right) $$</p>
+<h3>Confidence-Contrast Gate</h3>
+<p>The gate keeps onset boosts concentrated where the query score is high and locally above its neighborhood.</p>
+<p>First normalize the score track to unit scale:</p>
+<p>$$ c_i = \text{normalize}_{0,1}(s_i) $$</p>
+<p>Compute a local mean with <code>onset_gate_kernel: 7</code>:</p>
+<p>$$ \mu_i^{local} = \frac{1}{7}\sum_{r=-3}^{3} s_{i+r} $$</p>
+<p>Then compute positive local contrast:</p>
+<p>$$ \ell_i = \text{normalize}_{0,1}\left(\max(s_i - \mu_i^{local}, 0)\right) $$</p>
+<p>The active <code>confidence_contrast</code> gate is:</p>
+<p>$$ h_i = \sqrt{\text{clip}(c_i \ell_i, 0, 1)} $$</p>
+<p>With <code>onset_gate_strength: 1.0</code>, the gate fully modulates the normalized rising gradient:</p>
+<p>$$ g_i^{gated} = \bar{g}_i h_i $$</p>
+<p>No post-gate renormalization is used:</p>
+<p>$$ \text{onset\_renorm\_after\_gate} = false $$</p>
+<p>The final onset weight is:</p>
+<p>$$ w_i = 1 + \beta g_i^{gated} $$</p>
+<p>The timeline entering masking becomes:</p>
+<p>$$ s_i&#x27; = s_i w_i $$</p>
+<p>Dataset-native beta changes only the strength:</p>
+<ul>
+<li>- ActivityNet: \(\beta = 0.10\)</li>
+<li>- Charades: \(\beta = 0.35\)</li>
+</ul>
+<h2>5. Masking And Box-Cox Adjustment</h2>
+<p>The foreground mask uses the fixed threshold:</p>
+<p>$$ m_i = \mathbb{1}(s_i&#x27; &gt; 0.2) $$</p>
+<p>The <code>scores_masking</code> stage then cleans the mask and returns the masked frame indices. The active score vector after masking is:</p>
+<p>$$ x = \{s_i&#x27; \mid m_i = 1\} $$</p>
+<p>Box-Cox alignment adjustment is active because <code>disable_boxcox</code> is not enabled:</p>
+<p>$$ a_i = \begin{cases} \frac{x_i^\lambda - 1}{\lambda}, &amp; \lambda \neq 0 \\ \log(x_i), &amp; \lambda = 0 \end{cases} $$</p>
+<p>The adjusted score vector \(a\) is what proposal scoring consumes.</p>
+<h2>6. Normalized-Feature Temporal Clustering</h2>
+<p>For clustering, the system first picks the best token index per frame:</p>
+<p>$$ j_i^* = \arg\max_j S_{i,j} $$</p>
+<p>Because <code>cluster_feature_source: normalized</code>, clustering uses normalized semantic-token features rather than raw unnormalized features:</p>
+<p>$$ z_i = \hat{f}_{i,j_i^*} $$</p>
+<p>The relative timestamp is appended:</p>
+<p>$$ u_i = [z_i, i/T] $$</p>
+<p>Temporal smoothing is applied with <code>temporal_window_size: 21</code>, and temporal K-Means uses:</p>
+<p>$$ K = 12 $$</p>
+<p>Cluster transitions define candidate temporal regions. The proposal generator expands contiguous cluster regions using the dataset-native search geometry:</p>
+<ul>
+<li>- ActivityNet: <code>prior: 1.0</code>, <code>cand_num: 8</code></li>
+<li>- Charades: <code>prior: 0.5</code>, <code>cand_num: 12</code></li>
+</ul>
+<h2>7. Cohen&#x27;s d Proposal Scoring</h2>
+<p>Each proposal \(p = [b,e)\) is scored using the adjusted score vector \(a\). Let \(I_p\) be scores inside the proposal and \(O_p\) be scores outside it:</p>
+<p>$$ \mu_I = \text{mean}(I_p), \quad \mu_O = \text{mean}(O_p) $$</p>
+<p>Let the pooled standard deviation be:</p>
+<p>$$ \sigma_p = \sqrt{ \frac{(|I_p|-1)\sigma_I^2 + (|O_p|-1)\sigma_O^2} {|I_p| + |O_p| - 2} } $$</p>
+<p>The active scoring type is <code>cohens_d</code>:</p>
+<p>$$ \text{score}(p) = \frac{\mu_I - \mu_O}{\sigma_p + \epsilon} $$</p>
+<h3>Argmax Inclusion Bonus</h3>
+<p>The proposal score is multiplied if the proposal contains the global score peak:</p>
+<p>$$ \text{score}&#x27;(p) = \text{score}(p) \left(1 + \alpha_{argmax}\mathbb{1}[\arg\max_i a_i \in p]\right) $$</p>
+<p>Dataset-native values:</p>
+<ul>
+<li>- ActivityNet: \(\alpha_{argmax}=0.50\)</li>
+<li>- Charades: \(\alpha_{argmax}=0.10\)</li>
+</ul>
+<h2>8. Modern Dynamic Refinement</h2>
+<p>Legacy v00 start refinement is off:</p>
+<p>$$ \text{v00\_start\_refinement\_compat} = false $$</p>
+<p>The active refinement is the modern dynamic lane:</p>
+<pre><code class="language-yaml">enable_dynamic_refinement: true
+dynamic_refinement_mode: both
+dynamic_refinement_ths: 0.002
+dynamic_refinement_max_end_ratio: 0.35</code></pre>
+<p>The same <code>get_dynamic_scores</code> onset-pointer mechanism is computed in two directions:</p>
+<ul>
+<li>- forward track for start refinement</li>
+<li>- reversed track for end refinement</li>
+</ul>
+<p>For start refinement, a proposal beginning inside a sustained rise can expand backward to the launch point of that rise.</p>
+<p>For end refinement, the reversed score track lets the proposal end expand to a corresponding semantic boundary. The end expansion is capped:</p>
+<p>$$ \Delta e \leq 0.35 \cdot |p| $$</p>
+<p>The default behavior is <code>expand_only</code>, so this architecture is conservative: it can widen proposals to recover missing action extent, but it does not shrink them in the active cycle16 config.</p>
+<h2>9. DA-NMS Voting</h2>
+<p>After refinement, proposals are selected with <code>voting_method: da_nms</code>.</p>
+<p>For each candidate proposal \(p_j\), DA-NMS computes a density-aware consensus score:</p>
+<p>$$ \hat{S}_j = \sum_i \text{IoU}(p_i, p_j)^\gamma S_i D_i^{\alpha_D} $$</p>
+<p>where:</p>
+<ul>
+<li>- \(S_i\) is the proposal score after refinement.</li>
+<li>- \(D_i\) is the proposal internal density.</li>
+<li>- \(\alpha_D = 1.0\) by default.</li>
+<li>- \(\gamma = 0.6\) by default in the voting code path.</li>
+</ul>
+<p>The proposal list is sorted by \(\hat{S}_j\), and the top proposal becomes:</p>
+<p>$$ p_{final} = [t_{start}, t_{end}, \hat{S}] $$</p>
+<h2>10. What Is Not Active</h2>
+<p>These modules are intentionally excluded from the cycle16 aligned derivation:</p>
+<table>
+<thead><tr><th>Module</th><th>Why excluded</th></tr></thead>
+<tbody>
+<tr><td>Template/synonym ensemble</td><td>text encoding is anchor-only</td></tr>
+<tr><td>Boundary prompts</td><td><code>use_boundary_prompts</code> is absent/false</td></tr>
+<tr><td>Hybrid token scoring</td><td><code>alpha: 0.0</code>, <code>temp: 0.0</code> bypass it</td></tr>
+<tr><td>Semantic negatives</td><td>no negative preset and <code>neg_alpha</code> defaults to 0</td></tr>
+<tr><td>Quality degradation negatives</td><td>module flag absent/false</td></tr>
+<tr><td>Counterfactual negatives</td><td>module flag absent/false</td></tr>
+<tr><td>Query decomposition</td><td>module flag absent/false</td></tr>
+<tr><td>Object-as-negative</td><td>module flag absent/false</td></tr>
+<tr><td>Legacy v00 start refinement</td><td><code>v00_start_refinement_compat: false</code></td></tr>
+<tr><td>Adaptive gamma/k</td><td>module flags absent/false</td></tr>
+<tr><td>WBF, PSS, Soft-NMS alternatives</td><td><code>voting_method: da_nms</code> only</td></tr>
+<tr><td>Final choice refinement gate</td><td>module flag absent/false</td></tr>
+<tr><td>OOD padding/rho</td><td>both default to 0</td></tr>
+</tbody></table>
+<h2>11. Interpretation</h2>
+<p>The final aligned cycle16 architecture is a deliberately narrow story:</p>
+<ol>
+<li>1. Build a hard maximum query timeline from BLIP-2/Q-Former tokens.</li>
+<li>2. Boost only rising edges that are also confident and locally contrastive.</li>
+<li>3. Mask and Box-Cox normalize the foreground score distribution.</li>
+<li>4. Cluster normalized semantic-token features with time.</li>
+<li>5. Score proposals by Cohen&#x27;s d instead of raw inner-minus-outer contrast.</li>
+<li>6. Expand proposal boundaries with modern dynamic start/end refinement.</li>
+<li>7. Select by density-aware consensus voting.</li>
+</ol>
+<p>The main architectural claim is now clean: ActivityNet and Charades use the same active module path. The remaining differences are dataset-native numeric strengths, not different modules.</p>
+</article>
+</main>
+</body>
+</html>

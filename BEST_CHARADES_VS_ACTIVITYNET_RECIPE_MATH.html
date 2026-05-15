@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Best Charades vs ActivityNet Recipe Math</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f7f8fa;
+  --paper: #ffffff;
+  --ink: #17202a;
+  --muted: #5d6a76;
+  --line: #d9e0e7;
+  --accent: #0f766e;
+  --accent-soft: #e7f5f3;
+  --code-bg: #101820;
+  --code-ink: #ecf5f3;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.58;
+}
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+}
+.site-nav__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.site-nav__brand {
+  flex: 0 0 auto;
+  color: var(--ink);
+  font-weight: 750;
+  text-decoration: none;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.site-nav__links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 auto;
+  gap: 8px;
+  min-width: 0;
+}
+.site-nav__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 7px 11px;
+  border-radius: 8px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.site-nav__links a:hover,
+.site-nav__links a:focus-visible,
+.site-nav__links a[aria-current="page"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  outline: none;
+}
+main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 42px 24px 64px;
+}
+article {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 34px;
+  box-shadow: 0 10px 28px rgba(23, 32, 42, 0.06);
+}
+h1 { margin: 0 0 8px; font-size: clamp(2rem, 5vw, 2.6rem); line-height: 1.16; letter-spacing: 0; }
+h2 { margin: 34px 0 12px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 23px; letter-spacing: 0; }
+h3 { margin: 24px 0 10px; font-size: 18px; letter-spacing: 0; color: #123f3b; }
+p { margin: 10px 0 14px; }
+a { color: var(--accent); }
+ul, ol { padding-left: 1.5rem; }
+li { margin: 0.25em 0; }
+blockquote { margin: 1.2em 0; padding: 0.8em 1.1em; border-left: 4px solid var(--accent); background: var(--accent-soft); color: #123f3b; }
+code { background: #edf3f2; color: #163d39; padding: 0.14em 0.34em; border-radius: 4px; font-family: "Cascadia Code", Consolas, monospace; font-size: 0.92em; }
+pre { overflow-x: auto; background: var(--code-bg); color: var(--code-ink); padding: 1rem; border-radius: 8px; line-height: 1.45; }
+pre code { background: transparent; padding: 0; color: inherit; }
+table { width: 100%; border-collapse: collapse; margin: 1.2em 0; font-size: 0.95rem; }
+th, td { border: 1px solid var(--line); padding: 0.58rem 0.7rem; vertical-align: top; }
+th { background: #edf3f2; text-align: left; }
+tr:nth-child(even) td { background: #fbfdfd; }
+.doc-meta { color: var(--muted); font-size: 0.92rem; margin-bottom: 1.4rem; }
+@media (max-width: 760px) {
+  .site-nav__inner { padding: 10px 12px; align-items: stretch; flex-direction: column; gap: 8px; }
+  .site-nav__links { justify-content: flex-start; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+  .site-nav__links a { min-height: 36px; padding: 7px 10px; font-size: 13px; }
+  main { padding: 24px 12px 56px; }
+  article { padding: 24px 16px; }
+  table { display: block; overflow-x: auto; }
+}
+</style>
+<script>
+window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+<nav class="site-nav" aria-label="Document navigation">
+  <div class="site-nav__inner">
+    <a class="site-nav__brand" href="index.html">Cycle16 Docs</a>
+    <div class="site-nav__links">
+      <a href="index.html">Home</a>
+      <a href="BEST_CHARADES_VS_ACTIVITYNET_RECIPE_MATH.html" aria-current="page">Recipe Math</a>
+      <a href="BREAKTHROUGH_METRIC_CLAIM_OPTIONS.html">Breakthrough Claims</a>
+      <a href="Derivation_Pipeline_cycle16_aligned.html">Cycle16 Pipeline</a>
+    </div>
+  </div>
+</nav>
+<main>
+<article>
+<div class="doc-meta">Generated from experiments/BEST_CHARADES_VS_ACTIVITYNET_RECIPE_MATH.md.</div>
+<h1>Best Charades vs ActivityNet Recipe: Cycle16 Aligned Math</h1>
+<p>Date: 2026-05-15</p>
+<p>This note replaces the older cycle12/cycle14 comparison. The current conclusion is no longer &quot;Charades and ActivityNet need different module stacks.&quot; Cycle16 found a shared aligned architecture that works on both datasets:</p>
+<ul>
+<li>hard token path: <code>alpha: 0.0</code>, <code>temp: 0.0</code></li>
+<li>confidence-contrast rising-onset weighting</li>
+<li>normalized winning-token clustering</li>
+<li><code>cohens_d</code> proposal scoring</li>
+<li>modern two-sided dynamic refinement</li>
+<li><code>da_nms</code> voting</li>
+<li>negatives off</li>
+</ul>
+<p>Only dataset-native numeric strengths differ.</p>
+<h2>Current Evidence</h2>
+<table><thead><tr><th>Dataset</th><th>Source Experiment</th><th>Run</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th><th>Verdict</th></tr></thead><tbody>
+<tr><td>ActivityNet Captions</td><td><code>experiments/cycle15/21_activitynet_full_onset_family1_rise_confcontrast</code></td><td><code>01_rise_confcontrast_beta0100</code></td><td><strong>37.85</strong></td><td>53.93</td><td>29.62</td><td>16.09</td><td>New full-set ActivityNet mIoU best</td></tr>
+<tr><td>Charades-STA</td><td><code>experiments/cycle15/20_charades_gated_beta_boundary_ablation</code></td><td><code>19_hard_rise_confcontrast_beta035</code></td><td><strong>47.63</strong></td><td>70.11</td><td>52.31</td><td>28.79</td><td>Compatible aligned family; strong Charades result</td></tr>
+</tbody></table>
+<p>Against the TAG zero-shot/no-LLM baseline:</p>
+<table><thead><tr><th>Dataset</th><th>Method</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th><th>mIoU</th></tr></thead><tbody>
+<tr><td>Charades-STA</td><td>TAG baseline</td><td>67.82</td><td>48.58</td><td>26.67</td><td>45.69</td></tr>
+<tr><td>Charades-STA</td><td>Cycle16 aligned</td><td><strong>70.11</strong></td><td><strong>52.31</strong></td><td><strong>28.79</strong></td><td><strong>47.63</strong></td></tr>
+<tr><td>Charades-STA</td><td>Delta</td><td><strong>+2.29</strong></td><td><strong>+3.73</strong></td><td><strong>+2.12</strong></td><td><strong>+1.94</strong></td></tr>
+<tr><td>ActivityNet Captions</td><td>TAG baseline</td><td>51.88</td><td>28.91</td><td>15.07</td><td>36.55</td></tr>
+<tr><td>ActivityNet Captions</td><td>Cycle16 aligned</td><td><strong>53.93</strong></td><td><strong>29.62</strong></td><td><strong>16.09</strong></td><td><strong>37.85</strong></td></tr>
+<tr><td>ActivityNet Captions</td><td>Delta</td><td><strong>+2.05</strong></td><td><strong>+0.71</strong></td><td><strong>+1.02</strong></td><td><strong>+1.30</strong></td></tr>
+</tbody></table>
+<h2>Shared Active Architecture</h2>
+<p>These modules are now aligned:</p>
+<pre><code class="language-yaml">alpha: 0.0
+temp: 0.0
+scoring_type: cohens_d
+voting_method: da_nms
+use_quality_degradation_negatives: false
+negative_preset: null
+use_counterfactual_negatives: false
+use_boundary_prompts: false
+use_query_decomposition: false
+use_object_as_negative: false
+v00_start_refinement_compat: false
+enable_dynamic_refinement: true
+dynamic_refinement_mode: both
+dynamic_refinement_ths: 0.002
+dynamic_refinement_max_end_ratio: 0.35
+onset_gradient_mode: positive
+onset_norm_mode: percentile
+onset_norm_percentile: 95.0
+onset_smooth_kernel: 5
+onset_gate_mode: confidence_contrast
+onset_gate_strength: 1.0
+onset_gate_kernel: 7
+onset_gate_norm_percentile: 95.0
+onset_renorm_after_gate: false
+cluster_feature_source: normalized</code></pre>
+<h2>Dataset-Native Numeric Differences</h2>
+<table><thead><tr><th>Parameter</th><th>ActivityNet</th><th>Charades</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>beta</code></td><td>0.10</td><td>0.35</td><td>Charades tolerates stronger onset amplification; ActivityNet needs a gentler onset prior.</td></tr>
+<tr><td><code>gamma</code></td><td>0.9</td><td>0.2</td><td>Dataset-native alignment/Box-Cox strength from prior confirmed recipes.</td></tr>
+<tr><td><code>prior</code></td><td>1.0</td><td>0.5</td><td>ActivityNet allows longer proposals; Charades keeps spans tighter.</td></tr>
+<tr><td><code>cand_num</code></td><td>8</td><td>12</td><td>ActivityNet benefits from fewer final candidates; Charades benefits from a wider candidate set.</td></tr>
+<tr><td><code>kmeans_k</code></td><td>12</td><td>12</td><td>Shared cluster count.</td></tr>
+<tr><td><code>argmax_bonus_alpha</code></td><td>0.50</td><td>0.10</td><td>ActivityNet relies more strongly on proposals containing the global peak.</td></tr>
+<tr><td><code>temporal_window_size</code></td><td>21</td><td>21</td><td>Shared temporal pooling width.</td></tr>
+<tr><td><code>window_radius</code></td><td>7</td><td>7</td><td>Shared temporal coherence radius.</td></tr>
+</tbody></table>
+<h2>1. Raw Similarity Spine</h2>
+<p>Both datasets keep the TAG baseline hard-token spine.</p>
+<p>Let \(F \in \mathbb{R}^{T \times 32 \times 256}\) be BLIP-2/Q-Former video features and \(q\) be the normalized text query. The token similarity matrix is:</p>
+<p>$$ S_{i,j} = \hat{f}_{i,j}^{T}q $$</p>
+<p>The frame timeline is the hard maximum:</p>
+<p>$$ s_i = \max_j S_{i,j} $$</p>
+<p>Because:</p>
+<pre><code class="language-yaml">alpha: 0.0
+temp: 0.0</code></pre>
+<p>the hybrid token scorer is bypassed on both datasets. This is a major change from the older Charades-only recipe, which used <code>alpha=0.6</code> and <code>temp=0.03</code>.</p>
+<h2>2. Confidence-Contrast Rising-Onset Weighting</h2>
+<p>Cycle16 keeps the hard timeline but changes it before masking:</p>
+<p>$$ s_i&#x27; = s_i \left(1 + \beta \cdot g_i^{+} \cdot h_i^{conf-contrast}\right) $$</p>
+<p>where:</p>
+<p>$$ g_i^{+} = \max(s_i - s_{i-1}, 0) $$</p>
+<p>The gradient is smoothed with kernel 5 and normalized by the 95th percentile:</p>
+<p>$$ \bar{g}_i = \text{clip}\left(\frac{\text{smooth}_5(g_i^+)}{Q_{0.95}}, 0, 1\right) $$</p>
+<p>The confidence-contrast gate is:</p>
+<p>$$ h_i^{conf-contrast} = \sqrt{ \text{clip}(c_i \ell_i, 0, 1) } $$</p>
+<p>where \(c_i\) is normalized confidence and \(\ell_i\) is positive local contrast against a kernel-7 local mean.</p>
+<p>Interpretation:</p>
+<ul>
+<li>ActivityNet: \(\beta=0.10\), gentle onset boost.</li>
+<li>Charades: \(\beta=0.35\), stronger boundary boost.</li>
+</ul>
+<h2>3. Masking And Box-Cox</h2>
+<p>Both datasets use the same foreground threshold:</p>
+<p>$$ m_i = \mathbb{1}(s_i&#x27; &gt; 0.2) $$</p>
+<p>The masked score distribution is Box-Cox adjusted:</p>
+<p>$$ a_i = \begin{cases} \frac{(s_i&#x27;)^\lambda - 1}{\lambda}, &amp; \lambda \neq 0 \\ \log(s_i&#x27;), &amp; \lambda = 0 \end{cases} $$</p>
+<p>The top-level <code>gamma</code> differs by dataset:</p>
+<ul>
+<li>ActivityNet: <code>gamma: 0.9</code></li>
+<li>Charades: <code>gamma: 0.2</code></li>
+</ul>
+<h2>4. Normalized Winning-Token Clustering</h2>
+<p>Both datasets select the winning token index:</p>
+<p>$$ j_i^* = \arg\max_j S_{i,j} $$</p>
+<p>The old baseline clusters raw winning-token features:</p>
+<p>$$ f_{i,j_i^<em>} = F[i,j_i^</em>,:] $$</p>
+<p>Cycle16 clusters normalized winning-token features:</p>
+<p>$$ z_i = \frac{f_{i,j_i^<em>}}{\|f_{i,j_i^</em>}\|_2} $$</p>
+<p>Then time is appended:</p>
+<p>$$ u_i = [z_i, i/T] $$</p>
+<p>Shared clustering geometry:</p>
+<pre><code class="language-yaml">kmeans_k: 12
+temporal_window_size: 21
+window_radius: 7
+cluster_feature_source: normalized</code></pre>
+<p>Dataset-native proposal geometry:</p>
+<pre><code class="language-yaml">ActivityNet: prior=1.0, cand_num=8
+Charades:    prior=0.5, cand_num=12</code></pre>
+<h2>5. Cohen&#x27;s d Proposal Scoring</h2>
+<p>The older TAG baseline scores proposals with raw inner-minus-outer contrast:</p>
+<p>$$ S_p^{baseline} = \mu_I - \mu_O $$</p>
+<p>Cycle16 uses effect size:</p>
+<p>$$ S_p^{cycle16} = \frac{\mu_I - \mu_O}{\sigma_{pooled} + \epsilon} $$</p>
+<p>where:</p>
+<p>$$ \sigma_{pooled} = \sqrt{ \frac{(|I|-1)\sigma_I^2 + (|O|-1)\sigma_O^2} {|I|+|O|-2} } $$</p>
+<p>This rewards proposals whose inside distribution separates from outside context relative to variance, not just by raw mean difference.</p>
+<p>The argmax inclusion bonus remains dataset-native:</p>
+<p>$$ S_p&#x27; = S_p \left(1 + \alpha_{argmax}\mathbb{1}[\arg\max_i a_i \in p]\right) $$</p>
+<p>Values:</p>
+<ul>
+<li>ActivityNet: <code>argmax_bonus_alpha: 0.50</code></li>
+<li>Charades: <code>argmax_bonus_alpha: 0.10</code></li>
+</ul>
+<h2>6. Modern Two-Sided Dynamic Refinement</h2>
+<p>The old ActivityNet-compatible start-only block is now off:</p>
+<pre><code class="language-yaml">v00_start_refinement_compat: false</code></pre>
+<p>Both datasets use modern dynamic refinement:</p>
+<pre><code class="language-yaml">enable_dynamic_refinement: true
+dynamic_refinement_mode: both
+dynamic_refinement_ths: 0.002
+dynamic_refinement_max_end_ratio: 0.35</code></pre>
+<p>Conceptually:</p>
+<p>$$ p=[a,b] \rightarrow p&#x27;=[a&#x27;,b&#x27;] $$</p>
+<p>where the start can expand to a dynamic launch point, and the end can expand using the reversed dynamic signal. End expansion is capped:</p>
+<p>$$ \Delta b \leq 0.35 |p| $$</p>
+<p>This replaces the older mismatch:</p>
+<ul>
+<li>old Charades: modern dynamic refinement</li>
+<li>old ActivityNet: v00 notebook start-shift compatibility</li>
+</ul>
+<p>Cycle16 uses one refinement architecture for both.</p>
+<h2>7. DA-NMS Voting</h2>
+<p>The final selection uses density-aware NMS voting:</p>
+<p>$$ \hat{S}_j = \sum_i \text{IoU}(p_i,p_j)^\gamma S_i D_i^{\alpha_D} $$</p>
+<p>where \(D_i\) is proposal density. A useful approximation is:</p>
+<p>$$ D_i \approx \frac{\text{mean action score inside }p_i} {\text{max action score inside }p_i} $$</p>
+<p>So:</p>
+<ul>
+<li>\(D_i \approx 1\): dense, compact proposal.</li>
+<li>\(D_i \ll 1\): diluted proposal with weak/background context.</li>
+</ul>
+<p>The density exponent controls how strongly density affects voting:</p>
+<p>$$ D_i^{\alpha_D} $$</p>
+<p>Cycle16 uses the code default:</p>
+<pre><code class="language-yaml">da_nms_alpha: 1.0
+nms_gamma: 0.6</code></pre>
+<p>At \(\alpha_D=1.0\), density directly scales proposal voting power. This reduces the influence of overly wide, low-density spans.</p>
+<h2>8. What Changed From The Old Comparison</h2>
+<p>The previous note said:</p>
+<ul>
+<li>Charades wanted hybrid token scoring, quality negatives, and modern refinement.</li>
+<li>ActivityNet wanted exact hard max, no beta, no negatives, v00 static scoring, and v00 start refinement.</li>
+</ul>
+<p>Cycle16 changes that conclusion.</p>
+<p>Current conclusion:</p>
+<pre><code class="language-text">Shared modules:
+hard max timeline
++ confidence-contrast rising onset
++ normalized clustering
++ cohens_d scoring
++ modern both-side refinement
++ da_nms voting
++ negatives off</code></pre>
+<p>Dataset-specific differences are now numeric strengths:</p>
+<pre><code class="language-text">ActivityNet: beta=0.10, gamma=0.9, prior=1.0, cand_num=8, argmax_bonus=0.50
+Charades:    beta=0.35, gamma=0.2, prior=0.5, cand_num=12, argmax_bonus=0.10</code></pre>
+<h2>9. Practical Takeaway</h2>
+<p>The best current story is not &quot;each dataset wants a different architecture.&quot; It is:</p>
+<blockquote>
+<p>Use the same aligned TAG module path on both datasets, and let only dataset-native numeric strengths differ.</p>
+</blockquote>
+<p>This is why cycle16 is cleaner than the older cycle12/cycle14 pairing. The modules are now aligned; the remaining differences are interpretable dataset geometry and strength parameters.</p>
+<h2>10. Next Experiments</h2>
+<p>Cycle16 now has two 1000-sample numeric scouts:</p>
+<ul>
+<li><code>experiments/cycle16/config_cycle16_activitynet_family1_numeric_module_scout.yaml</code></li>
+<li><code>experiments/cycle16/config_cycle16_charades_family1_numeric_module_scout.yaml</code></li>
+</ul>
+<p>They sweep:</p>
+<ul>
+<li><code>beta</code></li>
+<li><code>dynamic_refinement_ths</code></li>
+<li><code>dynamic_refinement_max_end_ratio</code></li>
+<li><code>argmax_bonus_alpha</code></li>
+<li><code>kmeans_k</code></li>
+<li><code>cand_num</code></li>
+<li><code>window_radius</code></li>
+<li><code>temporal_window_size</code></li>
+<li><code>gamma</code></li>
+<li><code>onset_norm_percentile</code></li>
+<li><code>onset_smooth_kernel</code></li>
+<li><code>onset_gate_strength</code></li>
+<li><code>onset_gate_kernel</code></li>
+<li><code>onset_gate_norm_percentile</code></li>
+<li><code>onset_renorm_after_gate</code></li>
+</ul>
+<p>The goal is to tune the shared architecture numerically without changing the module story.</p>
+</article>
+</main>
+</body>
+</html>
+
