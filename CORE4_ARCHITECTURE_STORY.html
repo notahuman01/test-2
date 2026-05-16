@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cycle16 Core-4 Architecture Story</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f7f8fa;
+  --paper: #ffffff;
+  --ink: #17202a;
+  --muted: #5d6a76;
+  --line: #d9e0e7;
+  --accent: #0f766e;
+  --accent-soft: #e7f5f3;
+  --code-bg: #eef2f4;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.65;
+}
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+}
+.site-nav__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.site-nav__brand {
+  flex: 0 0 auto;
+  color: var(--ink);
+  font-weight: 750;
+  text-decoration: none;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.site-nav__links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 auto;
+  gap: 8px;
+  min-width: 0;
+}
+.site-nav__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 7px 11px;
+  border-radius: 8px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.site-nav__links a:hover,
+.site-nav__links a:focus-visible,
+.site-nav__links a[aria-current="page"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  outline: none;
+}
+main {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 48px 28px 80px;
+}
+article {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 42px;
+  box-shadow: 0 18px 60px rgba(23, 32, 42, 0.07);
+}
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 760;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+h1, h2, h3 {
+  color: #121820;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+h1 {
+  margin: 0 0 14px;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+}
+h2 {
+  margin: 1.8em 0 0.7em;
+  padding-top: 1.1em;
+  border-top: 1px solid var(--line);
+  font-size: 1.65rem;
+}
+h3 {
+  margin: 1.35em 0 0.55em;
+  color: var(--accent);
+  font-size: 1.18rem;
+}
+p { margin: 0.85em 0; }
+.lead {
+  max-width: 820px;
+  color: var(--muted);
+  font-size: 1.08rem;
+}
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 24px 0 10px;
+}
+.stage {
+  min-height: 132px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  background: #fbfdfd;
+}
+.stage span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 12px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  font-weight: 760;
+  font-size: 0.9rem;
+}
+.stage strong {
+  display: block;
+  margin-bottom: 6px;
+}
+.stage p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+.callout {
+  margin: 1.25em 0;
+  padding: 1rem 1.15rem;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--accent-soft);
+}
+.callout p { margin: 0.4em 0; color: #17443f; }
+blockquote {
+  margin: 1.2em 0;
+  padding: 0.9em 1.1em;
+  border-left: 4px solid var(--accent);
+  background: var(--accent-soft);
+  color: #17443f;
+}
+code {
+  background: var(--code-bg);
+  padding: 0.14em 0.34em;
+  border-radius: 4px;
+  font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.92em;
+}
+pre {
+  overflow-x: auto;
+  background: #1f2430;
+  color: #f7f7f7;
+  padding: 1rem;
+  border-radius: 8px;
+  line-height: 1.45;
+}
+pre code { background: transparent; padding: 0; color: inherit; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 0.94rem;
+}
+th, td {
+  border: 1px solid var(--line);
+  padding: 0.58rem 0.7rem;
+  vertical-align: top;
+}
+th { background: #edf6f4; text-align: left; }
+tr:nth-child(even) td { background: #fbfdfd; }
+.metric {
+  font-weight: 760;
+  color: var(--accent);
+}
+ul, ol { padding-left: 1.45rem; }
+li { margin: 0.25em 0; }
+.doc-meta {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-bottom: 1.4rem;
+}
+@media (max-width: 900px) {
+  .pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .site-nav__inner {
+    padding: 10px 12px;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .site-nav__links {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+  .site-nav__links a {
+    min-height: 36px;
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+  main { padding: 24px 12px 56px; }
+  article { padding: 24px 16px; border-radius: 8px; }
+  table { display: block; overflow-x: auto; }
+  .pipeline { grid-template-columns: 1fr; }
+}
+</style>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['$$', '$$']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+<nav class="site-nav" aria-label="Document navigation">
+  <div class="site-nav__inner">
+    <a class="site-nav__brand" href="index.html">Cycle16 Docs</a>
+    <div class="site-nav__links">
+      <a href="index.html">Home</a>
+      <a href="BEST_CHARADES_VS_ACTIVITYNET_RECIPE_MATH.html">Recipe Math</a>
+      <a href="BREAKTHROUGH_METRIC_CLAIM_OPTIONS.html">Breakthrough Claims</a>
+      <a href="Derivation_Pipeline_cycle16_aligned.html">Cycle16 Pipeline</a>
+      <a href="CORE4_ARCHITECTURE_STORY.html" aria-current="page">Core-4 Story</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+<article>
+  <p class="eyebrow">Cycle16 Architecture</p>
+  <h1>Core-4 Architecture Story</h1>
+  <p class="lead">The current shared Charades-STA and ActivityNet Captions recipe is built around four active zero-shot modules: Cohen's d scoring, DA-NMS voting, confidence-contrast onset weighting, and modern dynamic refinement.</p>
+  <p class="doc-meta">Source: <code>experiments/cycle16/CORE4_ARCHITECTURE_STORY.md</code></p>
+
+  <div class="pipeline" aria-label="Core module order">
+    <section class="stage">
+      <span>1</span>
+      <strong>Cohen's d scoring</strong>
+      <p>Score proposals as standardized inside/outside separation.</p>
+    </section>
+    <section class="stage">
+      <span>2</span>
+      <strong>DA-NMS voting</strong>
+      <p>Select proposals by density-aware temporal consensus.</p>
+    </section>
+    <section class="stage">
+      <span>3</span>
+      <strong>Onset weighting</strong>
+      <p>Amplify rising, locally confident query evidence.</p>
+    </section>
+    <section class="stage">
+      <span>4</span>
+      <strong>Modern refinement</strong>
+      <p>Correct start and end boundaries after candidate selection.</p>
+    </section>
+  </div>
+
+  <div class="callout">
+    <p><strong>Important caveat:</strong> this is the design story order, not a claim that the additive ladder is strictly monotonic. The evidence says the modules interact; the complete stack is what produces the headline result.</p>
+  </div>
+
+  <h2>Current Headline Recipe</h2>
+  <p>Shared active modules:</p>
+  <pre><code>alpha: 0.0
+temp: 0.0
+scoring_type: cohens_d
+voting_method: da_nms
+use_quality_degradation_negatives: false
+negative_preset: null
+use_counterfactual_negatives: false
+use_boundary_prompts: false
+use_query_decomposition: false
+use_object_as_negative: false
+v00_start_refinement_compat: false
+enable_dynamic_refinement: true
+dynamic_refinement_mode: both
+dynamic_refinement_ths: 0.002
+dynamic_refinement_max_end_ratio: 0.35
+onset_gradient_mode: positive
+onset_norm_mode: percentile
+onset_norm_percentile: 95.0
+onset_smooth_kernel: 5
+onset_gate_mode: confidence_contrast
+onset_gate_strength: 1.0
+onset_gate_kernel: 7
+onset_gate_norm_percentile: 95.0
+onset_renorm_after_gate: false
+cluster_feature_source: normalized</code></pre>
+
+  <h3>Dataset-Native Numeric Settings</h3>
+  <table>
+    <thead>
+      <tr><th>Parameter</th><th>ActivityNet</th><th>Charades</th><th>Meaning</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>beta</code></td><td>0.10</td><td>0.55</td><td>Onset strength; Charades benefits from stronger onset emphasis.</td></tr>
+      <tr><td><code>gamma</code></td><td>0.9</td><td>0.2</td><td>DA-NMS consensus sharpness / overlap weighting.</td></tr>
+      <tr><td><code>prior</code></td><td>1.0</td><td>0.5</td><td>Dataset-native proposal prior strength.</td></tr>
+      <tr><td><code>cand_num</code></td><td>8</td><td>12</td><td>ActivityNet prefers fewer candidates; Charades keeps a wider candidate pool.</td></tr>
+      <tr><td><code>kmeans_k</code></td><td>12</td><td>12</td><td>Shared cluster count.</td></tr>
+      <tr><td><code>argmax_bonus_alpha</code></td><td>0.50</td><td>0.10</td><td>ActivityNet relies more on the global peak; Charades keeps it lighter.</td></tr>
+      <tr><td><code>temporal_window_size</code></td><td>21</td><td>13</td><td>Charades improved after tightening temporal pooling.</td></tr>
+      <tr><td><code>window_radius</code></td><td>8</td><td>8</td><td>Current shared temporal radius after cycle16 tuning.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Current Evidence</h2>
+  <table>
+    <thead>
+      <tr><th>Dataset</th><th>Source</th><th>Run</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>ActivityNet Captions</td><td><code>experiments/cycle16/09_activitynet_full_top3_numeric_confirm</code></td><td><code>02_window_radius08</code></td><td class="metric">37.88</td><td>53.97</td><td>29.59</td><td>16.08</td></tr>
+      <tr><td>Charades-STA</td><td><code>experiments/cycle16/10_charades_full_tw13_additions_confirm</code></td><td><code>03_tw13_window_radius08</code></td><td class="metric">48.32</td><td>71.26</td><td>53.71</td><td>29.06</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Charades OOD Evidence</h3>
+  <table>
+    <thead>
+      <tr><th>Split</th><th>Source</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Standard</td><td><code>12_charades_window08_ood_suite / 00_standard</code></td><td>48.32</td><td>71.24</td><td>53.71</td><td>29.06</td></tr>
+      <tr><td>Test OOD</td><td><code>12_charades_window08_ood_suite / 01_test_ood</code></td><td>47.06</td><td>68.71</td><td>50.90</td><td>28.27</td></tr>
+      <tr><td>Novel composition</td><td><code>12_charades_window08_ood_suite / 02_novel_composition</code></td><td>45.28</td><td>68.33</td><td>48.79</td><td>26.47</td></tr>
+      <tr><td>Novel word</td><td><code>12_charades_window08_ood_suite / 03_novel_word</code></td><td class="metric">51.78</td><td class="metric">76.03</td><td class="metric">58.99</td><td class="metric">33.75</td></tr>
+      <tr><td>Pad10</td><td><code>12_charades_window08_ood_suite / 04_pad10</code></td><td>46.26</td><td>69.49</td><td>48.71</td><td>25.91</td></tr>
+      <tr><td>Pad15</td><td><code>12_charades_window08_ood_suite / 05_pad15</code></td><td>45.79</td><td>68.92</td><td>46.91</td><td>24.62</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Module 1: Cohen's d Scoring</h2>
+  <p>The first conceptual shift is to stop treating proposal quality as only an inner-minus-outer raw contrast. Cohen's d asks a more stable question:</p>
+  <blockquote>Is the proposal's inside region separated from its surrounding context by a meaningful standardized effect size?</blockquote>
+  <p>Instead of only rewarding high inside activation, it normalizes the inside/outside gap by variation. This matters because TAG-style proposal curves are noisy: a large raw difference can be less reliable than a smaller but cleaner separation.</p>
+  <p>Conceptually:</p>
+  <p>$$
+  S_p =
+  \frac{\mu_{inside}(p) - \mu_{outside}(p)}
+  {\sigma_{pooled}(p) + \epsilon}
+  $$</p>
+  <p>Why it belongs in the final architecture:</p>
+  <ul>
+    <li>It makes proposal scoring more scale-aware.</li>
+    <li>It helps ActivityNet strongly when paired with DA-NMS.</li>
+    <li>It gives a clean statistical interpretation: proposal confidence is an effect size, not just a raw gap.</li>
+  </ul>
+  <pre><code>scoring_type: cohens_d</code></pre>
+
+  <h2>Module 2: DA-NMS Voting</h2>
+  <p>The second conceptual shift is to make final proposal selection density-aware. Plain Soft-NMS suppresses or keeps proposals mostly through overlap and score. DA-NMS changes the vote into a support-weighted consensus:</p>
+  <p>$$
+  \hat{S}_j =
+  \sum_i IoU(p_i, p_j)^\gamma S_i D_i^{\alpha_D}
+  $$</p>
+  <p>where \(D_i\) is an internal proposal-density term. Dense proposal neighborhoods get more voting support; isolated overly-wide spans lose influence.</p>
+  <p>Why it belongs after Cohen's d in the story:</p>
+  <ul>
+    <li>Cohen's d improves the quality of the proposal score \(S_i\).</li>
+    <li>DA-NMS then asks which scored proposals are supported by nearby alternatives.</li>
+    <li>The pair turns scoring from "pick the best isolated span" into "pick the best statistically separated span that has local temporal support."</li>
+  </ul>
+  <pre><code>voting_method: da_nms
+gamma: 0.9   # ActivityNet
+gamma: 0.2   # Charades
+window_radius: 8</code></pre>
+
+  <h2>Module 3: Confidence-Contrast Onset Weighting</h2>
+  <p>The third module sharpens the timeline before proposal scoring and voting. It focuses on rising evidence:</p>
+  <p>$$
+  g_i^+ = \max(s_i - s_{i-1}, 0)
+  $$</p>
+  <p>Then it gates the rise by confidence contrast:</p>
+  <p>$$
+  s_i' = s_i \left(1 + \beta \cdot g_i^+ \cdot h_i^{conf-contrast}\right)
+  $$</p>
+  <p>This says: do not amplify every frame; amplify frames where the query evidence is rising and locally confident.</p>
+  <p>Why it belongs after scoring/voting in the story:</p>
+  <ul>
+    <li>Cohen's d and DA-NMS define how proposals are evaluated and selected.</li>
+    <li>Onset weighting improves the signal those modules consume.</li>
+    <li>It is especially important for Charades, where short human actions often start sharply.</li>
+  </ul>
+  <pre><code>onset_gradient_mode: positive
+onset_norm_mode: percentile
+onset_norm_percentile: 95.0
+onset_smooth_kernel: 5
+onset_gate_mode: confidence_contrast
+onset_gate_strength: 1.0
+onset_gate_kernel: 7
+onset_gate_norm_percentile: 95.0
+onset_renorm_after_gate: false
+beta: 0.10   # ActivityNet
+beta: 0.55   # Charades</code></pre>
+
+  <h2>Module 4: Modern Dynamic Refinement</h2>
+  <p>The final module fixes boundaries after proposal scoring and voting have produced a strong candidate. Older v00 start refinement was a narrow start-shift compatibility module. The modern version is cleaner: it refines both start and end using a shared dynamic policy.</p>
+  <pre><code>v00_start_refinement_compat: false
+enable_dynamic_refinement: true
+dynamic_refinement_mode: both
+dynamic_refinement_policy: legacy
+dynamic_refinement_start_behavior: expand_only
+dynamic_refinement_end_behavior: expand_only
+dynamic_refinement_ths: 0.002
+dynamic_refinement_max_end_ratio: 0.35</code></pre>
+  <p>Why it is last in the story:</p>
+  <ul>
+    <li>Cohen's d defines candidate quality.</li>
+    <li>DA-NMS chooses candidates by consensus.</li>
+    <li>Onset improves the temporal evidence.</li>
+    <li>Modern refinement performs the final boundary correction once the right proposal family has surfaced.</li>
+  </ul>
+  <p>This keeps the architecture mathematically cleaner than stacking the old v00 start-shift module with modern start/end refinement.</p>
+
+  <h2>Why This Order Makes Sense</h2>
+  <pre><code>Cohen's d scoring -> DA-NMS voting -> onset -> modern refinement</code></pre>
+  <ol>
+    <li>First, define a better proposal score.</li>
+    <li>Then, define a better voting/selection mechanism for those scores.</li>
+    <li>Then, sharpen the timeline signal feeding the scorer and voter.</li>
+    <li>Finally, refine boundaries after the strongest candidate has emerged.</li>
+  </ol>
+
+  <h3>Ablation Caveat</h3>
+  <p>The current <code>13_charades_window08_core4_additive_ladder</code> shows the modules are not independently monotonic:</p>
+  <table>
+    <thead>
+      <tr><th>Run</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>04_add_modern_refinement_final</code></td><td class="metric">48.32</td><td class="metric">71.26</td><td class="metric">53.71</td><td class="metric">29.06</td></tr>
+      <tr><td><code>01_add_onset_confcontrast</code></td><td>45.76</td><td>68.41</td><td>49.81</td><td>26.45</td></tr>
+      <tr><td><code>02_add_cohens_d_scoring</code></td><td>45.29</td><td>67.88</td><td>48.87</td><td>25.70</td></tr>
+      <tr><td><code>03_add_da_nms_voting</code></td><td>44.56</td><td>67.07</td><td>47.61</td><td>24.30</td></tr>
+      <tr><td><code>00_plain_geometry_no_core4</code></td><td>43.92</td><td>65.51</td><td>48.04</td><td>25.32</td></tr>
+    </tbody>
+  </table>
+  <blockquote>The final architecture is an interaction stack. Cohen's d gives a statistical proposal score, DA-NMS turns scores into density-aware consensus, onset improves the temporal signal, and modern refinement corrects the selected boundaries.</blockquote>
+
+  <h2>Short Claim Version</h2>
+  <p>Cycle16 upgrades TAG with four active zero-shot modules:</p>
+  <pre><code>Cohen's d scoring + DA-NMS voting + confidence-contrast onset + modern dynamic refinement</code></pre>
+  <p>The recipe keeps the TAG hard-token spine and does not use LLMs or training. The gain comes from replacing raw proposal contrast and plain consensus with an effect-size scorer, density-aware voting, onset-gated temporal evidence, and a modern boundary refiner.</p>
+  <ul>
+    <li>Charades-STA: <strong>48.32 mIoU</strong></li>
+    <li>ActivityNet Captions: <strong>37.88 mIoU</strong></li>
+    <li>Charades novel word OOD: <strong>51.78 mIoU</strong></li>
+  </ul>
+</article>
+</main>
+</body>
+</html>
