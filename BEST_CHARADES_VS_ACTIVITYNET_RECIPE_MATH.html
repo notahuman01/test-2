@@ -135,7 +135,7 @@ window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fon
 <article>
 <div class="doc-meta">Generated from experiments/BEST_CHARADES_VS_ACTIVITYNET_RECIPE_MATH.md.</div>
 <h1>Best Charades vs ActivityNet Recipe: Cycle16 Aligned Math</h1>
-<p>Date: 2026-05-15</p>
+<p>Date: 2026-05-17</p>
 <p>This note replaces the older cycle12/cycle14 comparison. The current conclusion is no longer &quot;Charades and ActivityNet need different module stacks.&quot; Cycle16 found a shared aligned architecture that works on both datasets:</p>
 <ul>
 <li>hard token path: <code>alpha: 0.0</code>, <code>temp: 0.0</code></li>
@@ -149,17 +149,17 @@ window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fon
 <p>Only dataset-native numeric strengths differ.</p>
 <h2>Current Evidence</h2>
 <table><thead><tr><th>Dataset</th><th>Source Experiment</th><th>Run</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th><th>Verdict</th></tr></thead><tbody>
-<tr><td>ActivityNet Captions</td><td><code>experiments/cycle15/21_activitynet_full_onset_family1_rise_confcontrast</code></td><td><code>01_rise_confcontrast_beta0100</code></td><td><strong>37.85</strong></td><td>53.93</td><td>29.62</td><td>16.09</td><td>New full-set ActivityNet mIoU best</td></tr>
-<tr><td>Charades-STA</td><td><code>experiments/cycle15/20_charades_gated_beta_boundary_ablation</code></td><td><code>19_hard_rise_confcontrast_beta035</code></td><td><strong>47.63</strong></td><td>70.11</td><td>52.31</td><td>28.79</td><td>Compatible aligned family; strong Charades result</td></tr>
+<tr><td>ActivityNet Captions</td><td><code>experiments/cycle16/09_activitynet_full_top3_numeric_confirm</code></td><td><code>02_window_radius08</code></td><td><strong>37.88</strong></td><td>53.97</td><td>29.59</td><td>16.08</td><td>Current full-set ActivityNet mIoU best</td></tr>
+<tr><td>Charades-STA</td><td><code>experiments/cycle16/10_charades_full_tw13_additions_confirm</code></td><td><code>03_tw13_window_radius08</code></td><td><strong>48.32</strong></td><td>71.26</td><td>53.71</td><td>29.06</td><td>Current full-set Charades mIoU best; OOD-confirmed in cycle16/12</td></tr>
 </tbody></table>
 <p>Against the TAG zero-shot/no-LLM baseline:</p>
 <table><thead><tr><th>Dataset</th><th>Method</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th><th>mIoU</th></tr></thead><tbody>
 <tr><td>Charades-STA</td><td>TAG baseline</td><td>67.82</td><td>48.58</td><td>26.67</td><td>45.69</td></tr>
-<tr><td>Charades-STA</td><td>Cycle16 aligned</td><td><strong>70.11</strong></td><td><strong>52.31</strong></td><td><strong>28.79</strong></td><td><strong>47.63</strong></td></tr>
-<tr><td>Charades-STA</td><td>Delta</td><td><strong>+2.29</strong></td><td><strong>+3.73</strong></td><td><strong>+2.12</strong></td><td><strong>+1.94</strong></td></tr>
+<tr><td>Charades-STA</td><td>Cycle16 latest</td><td><strong>71.26</strong></td><td><strong>53.71</strong></td><td><strong>29.06</strong></td><td><strong>48.32</strong></td></tr>
+<tr><td>Charades-STA</td><td>Delta</td><td><strong>+3.44</strong></td><td><strong>+5.13</strong></td><td><strong>+2.39</strong></td><td><strong>+2.63</strong></td></tr>
 <tr><td>ActivityNet Captions</td><td>TAG baseline</td><td>51.88</td><td>28.91</td><td>15.07</td><td>36.55</td></tr>
-<tr><td>ActivityNet Captions</td><td>Cycle16 aligned</td><td><strong>53.93</strong></td><td><strong>29.62</strong></td><td><strong>16.09</strong></td><td><strong>37.85</strong></td></tr>
-<tr><td>ActivityNet Captions</td><td>Delta</td><td><strong>+2.05</strong></td><td><strong>+0.71</strong></td><td><strong>+1.02</strong></td><td><strong>+1.30</strong></td></tr>
+<tr><td>ActivityNet Captions</td><td>Cycle16 latest</td><td><strong>53.97</strong></td><td><strong>29.59</strong></td><td><strong>16.08</strong></td><td><strong>37.88</strong></td></tr>
+<tr><td>ActivityNet Captions</td><td>Delta</td><td><strong>+2.09</strong></td><td><strong>+0.68</strong></td><td><strong>+1.01</strong></td><td><strong>+1.33</strong></td></tr>
 </tbody></table>
 <h2>Shared Active Architecture</h2>
 <p>These modules are now aligned:</p>
@@ -190,14 +190,14 @@ onset_renorm_after_gate: false
 cluster_feature_source: normalized</code></pre>
 <h2>Dataset-Native Numeric Differences</h2>
 <table><thead><tr><th>Parameter</th><th>ActivityNet</th><th>Charades</th><th>Meaning</th></tr></thead><tbody>
-<tr><td><code>beta</code></td><td>0.10</td><td>0.35</td><td>Charades tolerates stronger onset amplification; ActivityNet needs a gentler onset prior.</td></tr>
+<tr><td><code>beta</code></td><td>0.10</td><td>0.55</td><td>Charades benefits from stronger onset amplification; ActivityNet needs a gentler onset prior.</td></tr>
 <tr><td><code>gamma</code></td><td>0.9</td><td>0.2</td><td>Dataset-native alignment/Box-Cox strength from prior confirmed recipes.</td></tr>
 <tr><td><code>prior</code></td><td>1.0</td><td>0.5</td><td>ActivityNet allows longer proposals; Charades keeps spans tighter.</td></tr>
 <tr><td><code>cand_num</code></td><td>8</td><td>12</td><td>ActivityNet benefits from fewer final candidates; Charades benefits from a wider candidate set.</td></tr>
 <tr><td><code>kmeans_k</code></td><td>12</td><td>12</td><td>Shared cluster count.</td></tr>
 <tr><td><code>argmax_bonus_alpha</code></td><td>0.50</td><td>0.10</td><td>ActivityNet relies more strongly on proposals containing the global peak.</td></tr>
-<tr><td><code>temporal_window_size</code></td><td>21</td><td>21</td><td>Shared temporal pooling width.</td></tr>
-<tr><td><code>window_radius</code></td><td>7</td><td>7</td><td>Shared temporal coherence radius.</td></tr>
+<tr><td><code>temporal_window_size</code></td><td>21</td><td>13</td><td>Charades improves after tightening temporal pooling; ActivityNet keeps the wider window.</td></tr>
+<tr><td><code>window_radius</code></td><td>8</td><td>8</td><td>Shared current temporal coherence radius after cycle16 tuning.</td></tr>
 </tbody></table>
 <h2>1. Raw Similarity Spine</h2>
 <p>Both datasets keep the TAG baseline hard-token spine.</p>
@@ -222,7 +222,7 @@ temp: 0.0</code></pre>
 <p>Interpretation:</p>
 <ul>
 <li>ActivityNet: \(\beta=0.10\), gentle onset boost.</li>
-<li>Charades: \(\beta=0.35\), stronger boundary boost.</li>
+<li>Charades: \(\beta=0.55\), stronger boundary boost.</li>
 </ul>
 <h2>3. Masking And Box-Cox</h2>
 <p>Both datasets use the same foreground threshold:</p>
@@ -245,12 +245,11 @@ temp: 0.0</code></pre>
 <p>$$ u_i = [z_i, i/T] $$</p>
 <p>Shared clustering geometry:</p>
 <pre><code class="language-yaml">kmeans_k: 12
-temporal_window_size: 21
-window_radius: 7
+window_radius: 8
 cluster_feature_source: normalized</code></pre>
 <p>Dataset-native proposal geometry:</p>
-<pre><code class="language-yaml">ActivityNet: prior=1.0, cand_num=8
-Charades:    prior=0.5, cand_num=12</code></pre>
+<pre><code class="language-yaml">ActivityNet: prior=1.0, cand_num=8, temporal_window_size=21
+Charades:    prior=0.5, cand_num=12, temporal_window_size=13</code></pre>
 <h2>5. Cohen&#x27;s d Proposal Scoring</h2>
 <p>The older TAG baseline scores proposals with raw inner-minus-outer contrast:</p>
 <p>$$ S_p^{baseline} = \mu_I - \mu_O $$</p>
@@ -317,8 +316,8 @@ hard max timeline
 + da_nms voting
 + negatives off</code></pre>
 <p>Dataset-specific differences are now numeric strengths:</p>
-<pre><code class="language-text">ActivityNet: beta=0.10, gamma=0.9, prior=1.0, cand_num=8, argmax_bonus=0.50
-Charades:    beta=0.35, gamma=0.2, prior=0.5, cand_num=12, argmax_bonus=0.10</code></pre>
+<pre><code class="language-text">ActivityNet: beta=0.10, gamma=0.9, prior=1.0, cand_num=8, argmax_bonus=0.50, tw=21, radius=8
+Charades:    beta=0.55, gamma=0.2, prior=0.5, cand_num=12, argmax_bonus=0.10, tw=13, radius=8</code></pre>
 <h2>9. Practical Takeaway</h2>
 <p>The best current story is not &quot;each dataset wants a different architecture.&quot; It is:</p>
 <blockquote>

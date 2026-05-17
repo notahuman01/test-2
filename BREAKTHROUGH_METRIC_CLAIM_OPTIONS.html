@@ -229,23 +229,23 @@ mermaid.initialize({ startOnLoad: true, theme: 'default' });
 <li>9. Dynamic boundary refinement as a start-boundary correction bridge.</li>
 <li>10. Consensus voting / Soft-NMS-style proposal selection.</li>
 </ol>
-<p>Cycle16 keeps the strong TAG spine, but replaces four decision points: timeline weighting, proposal representation/scoring, refinement behavior, and voting.</p>
+<p>Cycle16 keeps the strong TAG spine, but replaces four decision points: timeline weighting, proposal representation/scoring, refinement behavior, and voting. The latest confirmed winners are the Charades window8 recipe and the ActivityNet window8 recipe.</p>
 <h2>Baseline Vs Cycle16 Metrics</h2>
 <h3>Charades-STA</h3>
 <table>
 <thead><tr><th>Method</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th><th>mIoU</th></tr></thead>
 <tbody>
 <tr><td>TAG baseline, zero-shot, no LLM</td><td>67.82</td><td>48.58</td><td>26.67</td><td>45.69</td></tr>
-<tr><td>Cycle16 aligned family1</td><td><strong>70.11</strong></td><td><strong>52.31</strong></td><td><strong>28.79</strong></td><td><strong>47.63</strong></td></tr>
-<tr><td>Delta</td><td><strong>+2.29</strong></td><td><strong>+3.73</strong></td><td><strong>+2.12</strong></td><td><strong>+1.94</strong></td></tr>
+<tr><td>Cycle16 latest window8 recipe</td><td><strong>71.26</strong></td><td><strong>53.71</strong></td><td><strong>29.06</strong></td><td><strong>48.32</strong></td></tr>
+<tr><td>Delta</td><td><strong>+3.44</strong></td><td><strong>+5.13</strong></td><td><strong>+2.39</strong></td><td><strong>+2.63</strong></td></tr>
 </tbody></table>
 <h3>ActivityNet Captions</h3>
 <table>
 <thead><tr><th>Method</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th><th>mIoU</th></tr></thead>
 <tbody>
 <tr><td>TAG baseline, zero-shot, no LLM</td><td>51.88</td><td>28.91</td><td>15.07</td><td>36.55</td></tr>
-<tr><td>Cycle16 aligned family1</td><td><strong>53.93</strong></td><td><strong>29.62</strong></td><td><strong>16.09</strong></td><td><strong>37.85</strong></td></tr>
-<tr><td>Delta</td><td><strong>+2.05</strong></td><td><strong>+0.71</strong></td><td><strong>+1.02</strong></td><td><strong>+1.30</strong></td></tr>
+<tr><td>Cycle16 latest window8 recipe</td><td><strong>53.97</strong></td><td><strong>29.59</strong></td><td><strong>16.08</strong></td><td><strong>37.88</strong></td></tr>
+<tr><td>Delta</td><td><strong>+2.09</strong></td><td><strong>+0.68</strong></td><td><strong>+1.01</strong></td><td><strong>+1.33</strong></td></tr>
 </tbody></table>
 <h2>Shared Cycle16 Parameters</h2>
 <pre><code class="language-yaml">alpha: 0.0
@@ -271,11 +271,13 @@ onset_renorm_after_gate: false</code></pre>
 <table>
 <thead><tr><th>Parameter</th><th>ActivityNet</th><th>Charades</th></tr></thead>
 <tbody>
-<tr><td><code>beta</code></td><td>0.10</td><td>0.35</td></tr>
+<tr><td><code>beta</code></td><td>0.10</td><td>0.55</td></tr>
 <tr><td><code>gamma</code></td><td>0.9</td><td>0.2</td></tr>
 <tr><td><code>prior</code></td><td>1.0</td><td>0.5</td></tr>
 <tr><td><code>cand_num</code></td><td>8</td><td>12</td></tr>
 <tr><td><code>argmax_bonus_alpha</code></td><td>0.50</td><td>0.10</td></tr>
+<tr><td><code>temporal_window_size</code></td><td>21</td><td>13</td></tr>
+<tr><td><code>window_radius</code></td><td>8</td><td>8</td></tr>
 </tbody></table>
 <h2>Option 1: Raw Timeline Upgrade</h2>
 <p>Best when introducing the onset contribution.</p>
@@ -292,7 +294,7 @@ onset_renorm_after_gate: false</code></pre>
 <li>- \(h_i^{conf-contrast}\) is high only when the frame is both confident and locally above its neighborhood.</li>
 </ul>
 <p>Core parameters:</p>
-<pre><code class="language-yaml">beta: 0.10 / 0.35
+<pre><code class="language-yaml">beta: 0.10 / 0.55
 onset_gradient_mode: positive
 onset_norm_percentile: 95.0
 onset_smooth_kernel: 5
@@ -303,7 +305,7 @@ onset_gate_mode: confidence_contrast</code></pre>
 </blockquote>
 <p>Metric attachment:</p>
 <blockquote>
-<p>This aligned onset path contributes to a +1.94 mIoU gain on Charades-STA and +1.30 mIoU on ActivityNet Captions over the TAG baseline.</p>
+<p>This aligned onset path contributes to a +2.63 mIoU gain on Charades-STA and +1.33 mIoU on ActivityNet Captions over the TAG baseline.</p>
 </blockquote>
 <h2>Option 2: Clustering Representation Upgrade</h2>
 <p>Best when explaining why cycle16 keeps hard tokens but changes proposal geometry.</p>
@@ -320,9 +322,9 @@ onset_gate_mode: confidence_contrast</code></pre>
 <p>$$ u_i = [z_i, i/T] $$</p>
 <p>Core parameters:</p>
 <pre><code class="language-yaml">cluster_feature_source: normalized
-temporal_window_size: 21
-window_radius: 7
-kmeans_k: 12</code></pre>
+kmeans_k: 12
+ActivityNet: temporal_window_size=21, window_radius=8
+Charades: temporal_window_size=13, window_radius=8</code></pre>
 <p>Claim wording:</p>
 <blockquote>
 <p>Cycle16 keeps TAG&#x27;s exact hard-token selection but changes the clustering representation from raw token magnitude to normalized semantic direction. This makes temporal clustering depend less on feature norm artifacts and more on semantic consistency through time.</p>
@@ -352,7 +354,7 @@ temp: 0.0</code></pre>
 </blockquote>
 <p>Metric attachment:</p>
 <blockquote>
-<p>The final aligned effect-size lane improves R@0.5 by +3.73 on Charades-STA and +0.71 on ActivityNet Captions over the TAG baseline.</p>
+<p>The final aligned effect-size lane improves R@0.5 by +5.13 on Charades-STA and +0.68 on ActivityNet Captions over the TAG baseline.</p>
 </blockquote>
 <h2>Option 4: Refinement Upgrade</h2>
 <p>Best when explaining the boundary logic.</p>
@@ -375,7 +377,7 @@ dynamic_refinement_max_end_ratio: 0.35</code></pre>
 </blockquote>
 <p>Metric attachment:</p>
 <blockquote>
-<p>The aligned recipe improves strict R@0.7 by +2.12 on Charades-STA and +1.02 on ActivityNet Captions over the TAG baseline.</p>
+<p>The aligned recipe improves strict R@0.7 by +2.39 on Charades-STA and +1.01 on ActivityNet Captions over the TAG baseline.</p>
 </blockquote>
 <h2>Option 5: Voting Upgrade</h2>
 <p>Best when explaining final proposal selection.</p>
