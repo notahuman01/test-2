@@ -417,15 +417,25 @@ onset_gradient_mode: positive</pre>
     </table>
 
     <h3>LLM Direction</h3>
+    <p>
+      Source: <code>experiments/cycle17/12_charades_onset_abs_llm_outputs</code>.
+      This is part of the onset_abs group: it keeps the Charades onset_abs base
+      (<code>onset_gradient_mode: abs</code>, <code>beta: 0.55</code>,
+      <code>w=13</code>, <code>k=12</code>, <code>r=8</code>,
+      <code>cohens_d</code>, <code>da_nms</code>) and changes only the text/query source.
+    </p>
     <table>
       <thead><tr><th>Charades Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
       <tbody>
-        <tr><td><code>04_llm_original_plus_descriptions</code></td><td class="num"><strong>48.87</strong></td><td class="num">72.53</td><td class="num">54.57</td><td class="num">29.68</td></tr>
+        <tr><td><code>05_llm_old_tag_proposal_pool</code></td><td class="num"><strong>49.32</strong></td><td class="num"><strong>72.82</strong></td><td class="num"><strong>54.70</strong></td><td class="num"><strong>29.92</strong></td></tr>
+        <tr><td><code>04_llm_original_plus_descriptions</code></td><td class="num">48.87</td><td class="num">72.53</td><td class="num">54.57</td><td class="num">29.68</td></tr>
         <tr><td><code>03_llm_descriptions_joined</code></td><td class="num">48.58</td><td class="num">72.23</td><td class="num">54.14</td><td class="num">28.87</td></tr>
         <tr><td><code>00_standard_annotations</code></td><td class="num">48.45</td><td class="num">71.53</td><td class="num">54.35</td><td class="num">29.52</td></tr>
+        <tr><td><code>02_llm_first_description</code></td><td class="num">48.15</td><td class="num">71.18</td><td class="num">53.60</td><td class="num">29.52</td></tr>
+        <tr><td><code>01_llm_sub_queries</code></td><td class="num">48.07</td><td class="num">71.10</td><td class="num">53.76</td><td class="num">28.84</td></tr>
       </tbody>
     </table>
-    <p class="small-note">Pending correction: the configs now include <code>old_tag_proposal_pool</code>, which reproduces old TAG's LLM method by localizing the original query and each LLM description separately, pooling proposals, then voting.</p>
+    <p class="small-note"><code>05_llm_old_tag_proposal_pool</code> is the strongest completed LLM row. It reproduces old TAG's LLM method by localizing the original query and each LLM description separately, pooling proposals, then voting; it improves the standard onset_abs annotation row by +0.87 mIoU.</p>
   </section>
 
   <section class="section">
@@ -467,4 +477,3 @@ experiments/cycle17/22_config_cycle17_activitynet_query_similarity_tau_sweep.yam
 </main>
 </body>
 </html>
-
