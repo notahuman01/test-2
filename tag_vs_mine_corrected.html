@@ -1,0 +1,262 @@
+
+<style>
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.section-label{font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--color-text-tertiary);padding:8px 12px 4px;background:var(--color-background-tertiary)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{padding:8px 12px;text-align:left;font-weight:500;font-size:12px;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+th.mine{color:#0C447C;background:#E6F1FB}
+th.tag{color:#3B6D11;background:#EAF3DE}
+td{padding:7px 12px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;color:var(--color-text-primary);font-size:12.5px}
+td.dim{color:var(--color-text-secondary);font-size:12px}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.badge-new{background:#E6F1FB;color:#0C447C}
+.badge-mod{background:#FAEEDA;color:#633806}
+.badge-off{background:#FCEBEB;color:#A32D2D}
+.badge-same{background:#F1EFE8;color:#5F5E5A}
+.note{font-size:11px;color:var(--color-text-tertiary);margin-top:3px;line-height:1.4}
+.metric-row{display:flex;gap:8px;flex-wrap:wrap;padding:12px}
+.metric-card{flex:1;min-width:110px;padding:10px 12px;border-radius:8px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
+.metric-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
+.metric-tag{font-size:18px;font-weight:500;color:#3B6D11}
+.metric-mine{font-size:18px;font-weight:500;color:#0C447C}
+.metric-delta-pos{font-size:11px;font-weight:500;color:#3B6D11;margin-top:2px}
+.metric-delta-neg{font-size:11px;font-weight:500;color:#A32D2D;margin-top:2px}
+.verdict-box{margin:12px;padding:14px 16px;border-radius:8px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.verdict-body{font-size:12.5px;color:var(--color-text-secondary);line-height:1.7}
+</style>
+
+<h2 class="sr-only">Corrected comparison table between TAG baseline and Dimos's method, with precise module activation status derived from config and source code.</h2>
+
+<div class="section-label">Performance — Charades-STA full test set</div>
+<div class="metric-row">
+  <div class="metric-card">
+    <div class="metric-label">mIoU</div>
+    <div><span class="metric-tag">45.69</span> <span style="font-size:11px;color:var(--color-text-tertiary)">TAG</span></div>
+    <div><span class="metric-mine">48.32</span> <span style="font-size:11px;color:var(--color-text-tertiary)">mine</span></div>
+    <div class="metric-delta-pos">▲ +2.63 pts (+5.75%)</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">R@0.3</div>
+    <div><span class="metric-tag">67.82</span></div>
+    <div><span class="metric-mine">71.26</span></div>
+    <div class="metric-delta-pos">▲ +3.44 pts</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">R@0.5</div>
+    <div><span class="metric-tag">48.58</span></div>
+    <div><span class="metric-mine">53.71</span></div>
+    <div class="metric-delta-pos">▲ +5.13 pts</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">R@0.7</div>
+    <div><span class="metric-tag">26.67</span></div>
+    <div><span class="metric-mine">29.06</span></div>
+    <div class="metric-delta-pos">▲ +2.39 pts</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Runtime</div>
+    <div><span class="metric-tag">285s</span></div>
+    <div><span style="font-size:18px;font-weight:500;color:#A32D2D">881s</span></div>
+    <div class="metric-delta-neg">▲ 3.1× slower</div>
+  </div>
+</div>
+
+<div class="section-label">Component-level diff — verified against config + source code</div>
+<table>
+  <thead>
+    <tr>
+      <th style="width:20%">Component</th>
+      <th class="tag" style="width:28%">TAG (official)</th>
+      <th class="mine" style="width:28%">Mine (this run)</th>
+      <th style="width:24%">Status &amp; evidence</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr style="background:var(--color-background-secondary)">
+      <td colspan="4" style="font-size:11px;font-weight:500;padding:5px 12px;color:var(--color-text-secondary)">TOKEN AGGREGATION</td>
+    </tr>
+    <tr>
+      <td><strong>Token selection (alpha/temp)</strong></td>
+      <td class="dim">alpha=0.7, temp=0.03 in config — but <code>core.py localize()</code> never reads them. Hard max only.
+        <div class="note">Dead params — confirmed by reading core.py in full</div>
+      </td>
+      <td class="dim">alpha=0.0, temp=0.0 → <code>bypass_hybrid=True</code> → <code>scores = raw_scores.clone()</code> (hard max)
+        <div class="note">Explicit bypass path at line 5369–5376</div>
+      </td>
+      <td><span class="badge badge-same">Identical</span><div class="note">Both methods use pure hard max. TAG's alpha/temp are unused dead params.</div></td>
+    </tr>
+
+    <tr style="background:var(--color-background-secondary)">
+      <td colspan="4" style="font-size:11px;font-weight:500;padding:5px 12px;color:var(--color-text-secondary)">SIMILARITY SCORING (Step 3–4)</td>
+    </tr>
+    <tr>
+      <td><strong>Proposal scoring function</strong></td>
+      <td class="dim">Static: <code>inner_sum/k − outer_sum/(N−k)</code> via cumulative sum. No std normalization.</td>
+      <td class="dim"><code>cohens_d</code>: <code>(inner_mean − outer_mean) / pooled_std</code>. Effect-size normalized.
+        <div class="note">Config: <code>scoring_type: cohens_d</code>; code line 4142–4143</div>
+      </td>
+      <td><span class="badge badge-new">New — active</span><div class="note">Divides by pooled std, making score invariant to absolute score level</div></td>
+    </tr>
+    <tr>
+      <td><strong>Dynamic onset weighting (beta)</strong></td>
+      <td class="dim">No beta parameter — onset weighting absent entirely.</td>
+      <td class="dim"><code>beta=0.55</code> → <code>compute_onset_weights()</code> applied to scores before masking. Uses positive gradient, percentile norm, confidence_contrast gate.
+        <div class="note">Config: beta=0.55; gate: <code>if beta > 0</code> at line 5678</div>
+      </td>
+      <td><span class="badge badge-new">New — active</span><div class="note">Upweights frames at activity onset, suppressing score plateau regions</div></td>
+    </tr>
+    <tr>
+      <td><strong>Argmax bonus</strong></td>
+      <td class="dim">Not present.</td>
+      <td class="dim">Proposals containing the timeline argmax get a <code>×(1 + 0.1)</code> score boost.
+        <div class="note">Config: <code>argmax_bonus_alpha: 0.1</code>; code line 4201–4203</div>
+      </td>
+      <td><span class="badge badge-new">New — active</span></td>
+    </tr>
+
+    <tr style="background:var(--color-background-secondary)">
+      <td colspan="4" style="font-size:11px;font-weight:500;padding:5px 12px;color:var(--color-text-secondary)">CLUSTERING (Step 5–7)</td>
+    </tr>
+    <tr>
+      <td><strong>Feature source</strong></td>
+      <td class="dim">Raw video features. Comment in core.py: "[CORRECTION]: Use RAW features for clustering (Paper Exact)"</td>
+      <td class="dim">L2-normalized video features.
+        <div class="note">Config: <code>cluster_feature_source: normalized</code></div>
+      </td>
+      <td><span class="badge badge-mod">Modified — active</span><div class="note">Normalizing changes cluster geometry; cosine-uniform space vs magnitude-skewed</div></td>
+    </tr>
+    <tr>
+      <td><strong>k-means k</strong></td>
+      <td class="dim">k = 9</td>
+      <td class="dim">k = 12 — more segments, finer boundaries
+        <div class="note">Config: <code>kmeans_k: 12</code></div>
+      </td>
+      <td><span class="badge badge-mod">Tuned — active</span></td>
+    </tr>
+    <tr>
+      <td><strong>Temporal smoothing window</strong></td>
+      <td class="dim">kernel = 21, radius = 7</td>
+      <td class="dim">kernel = 13, radius = 8 — shorter but wider temporal context per frame
+        <div class="note">Config: <code>temporal_window_size: 13</code>, <code>window_radius: 8</code></div>
+      </td>
+      <td><span class="badge badge-mod">Tuned — active</span></td>
+    </tr>
+
+    <tr style="background:var(--color-background-secondary)">
+      <td colspan="4" style="font-size:11px;font-weight:500;padding:5px 12px;color:var(--color-text-secondary)">NMS / VOTING (Step 8)</td>
+    </tr>
+    <tr>
+      <td><strong>NMS method</strong></td>
+      <td class="dim">Soft IoU-weighted NMS: <code>score_j = Σ IoU(i,j)^γ × w_i</code>. Single gamma=0.6 (via <code>nms_gamma</code> default in evaluate.py)</td>
+      <td class="dim">DA-NMS (Distribution-Aware NMS) — computes vote scores with additional onset-gated weighting and boundary consensus signals.
+        <div class="note">Config: <code>voting_method: da_nms</code></div>
+      </td>
+      <td><span class="badge badge-new">New — active</span></td>
+    </tr>
+    <tr>
+      <td><strong>Stride for dynamic scoring</strong></td>
+      <td class="dim">20 (hardcoded in evaluate.py call)</td>
+      <td class="dim">40 (configurable)
+        <div class="note">Config: <code>stride: 40</code></div>
+      </td>
+      <td><span class="badge badge-mod">Tuned — active</span></td>
+    </tr>
+
+    <tr style="background:var(--color-background-secondary)">
+      <td colspan="4" style="font-size:11px;font-weight:500;padding:5px 12px;color:var(--color-text-secondary)">BOUNDARY REFINEMENT (Step 9)</td>
+    </tr>
+    <tr>
+      <td><strong>Dynamic refinement scope</strong></td>
+      <td class="dim">Start boundary only — single loop adjusts <code>fp[0]</code> leftward</td>
+      <td class="dim"><code>dynamic_refinement_mode: both</code> — refines start and end independently with separate onset/offset signal
+        <div class="note">Config: <code>enable_dynamic_refinement: true</code>, mode: <code>both</code></div>
+      </td>
+      <td><span class="badge badge-new">Extended — active</span></td>
+    </tr>
+    <tr>
+      <td><strong>Refinement gate</strong></td>
+      <td class="dim">Fixed threshold: <code>ths=0.0005</code>, sigma=1</td>
+      <td class="dim">Confidence-contrast gating with max_end_ratio=0.35 — prevents over-extending
+        <div class="note">Config: <code>dynamic_refinement_ths: 0.002</code>, <code>dynamic_refinement_max_end_ratio: 0.35</code></div>
+      </td>
+      <td><span class="badge badge-new">Extended — active</span></td>
+    </tr>
+
+    <tr style="background:var(--color-background-secondary)">
+      <td colspan="4" style="font-size:11px;font-weight:500;padding:5px 12px;color:var(--color-text-secondary)">MODULES BUILT BUT NOT ACTIVE IN THIS RUN</td>
+    </tr>
+    <tr>
+      <td><strong>Hybrid token selection</strong></td>
+      <td class="dim">Not implemented</td>
+      <td class="dim">Implemented (alpha * hard_max + (1-α) * LSE). <strong>Off</strong>: alpha=0.0 &amp; temp=0.0 → bypass path.
+        <div class="note">Ablation variable; disabling it isolates other changes</div>
+      </td>
+      <td><span class="badge badge-off">Implemented — off</span></td>
+    </tr>
+    <tr>
+      <td><strong>Query decomposition</strong></td>
+      <td class="dim">Not implemented</td>
+      <td class="dim">Person/action/object parse + separate embeddings implemented. <strong>Off</strong>: <code>use_query_decomposition</code> absent from config → defaults False.
+        <div class="note">Step9 qd_late all-zero in results confirms this</div>
+      </td>
+      <td><span class="badge badge-off">Implemented — off</span></td>
+    </tr>
+    <tr>
+      <td><strong>Negative-bank re-ranking</strong></td>
+      <td class="dim">Not implemented</td>
+      <td class="dim">Implemented. <strong>Off</strong>: requires <code>neg_text_feat</code> from evaluate.py — not passed.
+        <div class="note">neg_alpha=0.0 in config; not enabled</div>
+      </td>
+      <td><span class="badge badge-off">Implemented — off</span></td>
+    </tr>
+
+    <tr style="background:var(--color-background-secondary)">
+      <td colspan="4" style="font-size:11px;font-weight:500;padding:5px 12px;color:var(--color-text-secondary)">DIAGNOSTICS (new infrastructure, passive)</td>
+    </tr>
+    <tr>
+      <td><strong>Step-by-step audit trail</strong></td>
+      <td class="dim">scores curve only (<code>extra_info</code>)</td>
+      <td class="dim">13-step audit: oracle gap, boundary error, contrast-z, cluster purity, KL-outside, SNR, argmax offset, failure mode flags per sample</td>
+      <td><span class="badge badge-new">New — passive</span><div class="note">Does not affect predictions; enables failure mode analysis</div></td>
+    </tr>
+    <tr>
+      <td><strong>Boundary consensus metrics</strong></td>
+      <td class="dim">Not present</td>
+      <td class="dim">40 per-proposal signals (support IoU, shrink score, edge weakness, meta-rank v1–v4)</td>
+      <td><span class="badge badge-new">New — passive</span></td>
+    </tr>
+    <tr>
+      <td><strong>Failure mode labels</strong></td>
+      <td class="dim">Not present</td>
+      <td class="dim">Per-sample flags: timeline_bad, proposal_bad, ranking_bad, scoring_bad, voting_bad, refinement_bad</td>
+      <td><span class="badge badge-new">New — passive</span></td>
+    </tr>
+
+  </tbody>
+</table>
+
+<div class="section-label">What actually drives the gains — corrected summary</div>
+<div class="verdict-box">
+  <div class="verdict-body">
+    The gains come from <strong>five active algorithmic changes</strong> plus hyperparameter tuning — not from token selection, query decomposition, or negative ranking, which are all off in this run.
+    <br><br>
+    <strong>1. Cohen's d scoring</strong> — replaces mean-contrast with a std-normalized effect size. Prevents high-score plateaus from dominating long proposals.<br>
+    <strong>2. Dynamic onset weighting (beta=0.55)</strong> — upweights frames at activity onset using a positive-gradient signal with confidence-contrast gating. This is the only mechanism that modifies the similarity timeline before masking and clustering — making it structurally novel vs TAG.<br>
+    <strong>3. DA-NMS</strong> — replaces single-gamma soft NMS with a distribution-aware voting that uses boundary consensus signals.<br>
+    <strong>4. Bidirectional boundary refinement</strong> — TAG only refines the start; mine also corrects the end boundary.<br>
+    <strong>5. Normalized clustering features</strong> — changes the geometry of the k-means space from magnitude-skewed to cosine-uniform.<br>
+    <br>
+    The hyperparameter changes (k=12, window=13, stride=40) cannot be cleanly separated from the algorithmic ones without ablation runs — they may account for a non-trivial portion of the gain.
+  </div>
+</div>
+
+<div class="section-label">Publishability verdict — unchanged framing recommendation</div>
+<div class="verdict-box">
+  <div class="verdict-body">
+    With the token selection and query decomposition correctly identified as off, the publishable story becomes <strong>cleaner and more honest</strong>: the gains come from a small set of principled, individually motivated changes — not an opaque parameter sweep. This is actually better for a paper.<br><br>
+    <strong>Strongest angle:</strong> "We identify that TAG's scoring is not std-normalized (problematic for variable-length proposals), its refinement is unidirectional, and its timeline is not onset-aware. We fix each in isolation and validate with a failure-mode audit framework." This framing lets the diagnostic infrastructure be the paper's methodological centerpiece, and the per-fix ablation is the results section.<br><br>
+    <strong>The key open question:</strong> Are the gains from changes 1–5 each independently contributing, or do they interact? You need at least a 5-row ablation table to claim them as separate contributions.
+  </div>
+</div>

@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cycle16 to Cycle17 Story and Pending Decisions</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fa;
+      --paper: #ffffff;
+      --ink: #17202a;
+      --muted: #5d6a76;
+      --line: #d9e0e7;
+      --accent: #0f766e;
+      --accent-soft: #e7f5f3;
+      --warn: #8a5a00;
+      --warn-soft: #fff7df;
+      --good: #146c43;
+      --good-soft: #e9f7ef;
+      --bad: #9b1c31;
+      --bad-soft: #fdecef;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.58;
+    }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+
+    .site-nav__inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .site-nav__brand {
+      flex: 0 0 auto;
+      color: var(--ink);
+      font-weight: 750;
+      text-decoration: none;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .site-nav__links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex: 1 1 auto;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .site-nav__links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 11px;
+      border-radius: 8px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .site-nav__links a:hover,
+    .site-nav__links a:focus-visible,
+    .site-nav__links a[aria-current="page"] {
+      background: var(--accent-soft);
+      color: var(--accent);
+      outline: none;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 46px 24px 80px;
+    }
+
+    .hero {
+      max-width: 900px;
+      margin-bottom: 32px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(2.15rem, 6vw, 4.4rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 44px 0 14px;
+      font-size: 28px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 28px 0 10px;
+      font-size: 20px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 840px;
+    }
+
+    .callout-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 26px 0 34px;
+    }
+
+    .callout {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .good { background: var(--good-soft); border-color: #bfe8ce; }
+    .good strong { color: var(--good); }
+    .warn { background: var(--warn-soft); border-color: #f3d994; }
+    .warn strong { color: var(--warn); }
+    .bad { background: var(--bad-soft); border-color: #f4b8c2; }
+    .bad strong { color: var(--bad); }
+
+    .section {
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      margin: 18px 0;
+      box-shadow: 0 10px 28px rgba(23, 32, 42, 0.045);
+    }
+
+    .section h2:first-child,
+    .section h3:first-child {
+      margin-top: 0;
+    }
+
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 5px;
+      background: #eef2f6;
+      color: #24313d;
+      font-size: .92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 14px 0;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #101820;
+      color: #ecf4f3;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 22px;
+      font-size: 14px;
+      background: var(--paper);
+    }
+
+    th, td {
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f0f4f7;
+      color: var(--ink);
+      font-weight: 750;
+    }
+
+    td.num, th.num { text-align: right; }
+
+    ul, ol {
+      color: var(--muted);
+      padding-left: 22px;
+      margin: 10px 0 0;
+    }
+
+    li { margin: 6px 0; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .small-note {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .callout-grid,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .site-nav__inner {
+        padding: 10px 12px;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .site-nav__links {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scrollbar-width: thin;
+      }
+
+      .site-nav__links a {
+        min-height: 36px;
+        padding: 7px 10px;
+        font-size: 13px;
+      }
+
+      main {
+        padding: 32px 14px 56px;
+      }
+
+      .section {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Document navigation">
+  <div class="site-nav__inner">
+    <a class="site-nav__brand" href="index.html">Cycle Docs</a>
+    <div class="site-nav__links">
+      <a href="index.html">Home</a>
+      <a href="BEST_CHARADES_VS_ACTIVITYNET_RECIPE_MATH.html">Recipe Math</a>
+      <a href="BREAKTHROUGH_METRIC_CLAIM_OPTIONS.html">Breakthrough Claims</a>
+      <a href="Derivation_Pipeline_cycle16_aligned.html">Pipeline</a>
+      <a href="CORE4_ARCHITECTURE_STORY.html">Core-4</a>
+      <a href="CYCLE16_TO_17_STORY_AND_PENDING.html" aria-current="page">Cycle17 Story</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <p class="eyebrow">Cycle16 to Cycle17 Memo</p>
+    <h1>Stabilization, Final Candidate, and Validation Gate</h1>
+    <p class="lead">Cycle16 established the aligned TAG-derived architecture. Cycle17 refined the onset mechanism, opened LLM and query-similarity pooling candidates, and now has one last decision gate before broad experimentation should stop.</p>
+  </section>
+
+  <section class="callout-grid" aria-label="Current status">
+    <div class="callout good">
+      <strong>Charades clean candidate</strong>
+      <p><code>query_similarity_pool</code> reached 48.77 mIoU, improving the onset_abs anchor by +0.32.</p>
+    </div>
+    <div class="callout warn">
+      <strong>ActivityNet transfer issue</strong>
+      <p>The same tau=0.10 setting dropped ActivityNet from 37.91 to 37.60 mIoU.</p>
+    </div>
+    <div class="callout">
+      <strong>Final gate</strong>
+      <p>After the tau sweeps, stop broad experimentation and move into validation only.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Short Story</h2>
+    <pre>Cycle16 stabilized the shared architecture and showed the main Charades gains come from onset + refinement.
+Cycle16 proved the architecture also improves under TAG's original hyperparameters.
+Cycle17 moved the best Charades onset from positive gradient to absolute gradient.
+Cycle17 then found two candidates: LLM-expanded query usage and query-similarity temporal pooling.
+The final open question is whether query-similarity pooling has a tau that transfers to ActivityNet.</pre>
+  </section>
+
+  <section class="section">
+    <h2>Group 1: Stabilization</h2>
+    <p>The first group stabilized an aligned module stack across Charades-STA and ActivityNet while allowing dataset-native numeric parameters.</p>
+    <pre>scoring_type: cohens_d
+voting_method: da_nms
+cluster_feature_source: normalized
+use_quality_degradation_negatives: false
+use_counterfactual_negatives: false
+use_boundary_prompts: false
+use_query_decomposition: false</pre>
+
+    <div class="two-col">
+      <div>
+        <h3>ActivityNet Anchor</h3>
+        <table>
+          <thead><tr><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+          <tbody><tr><td><code>03_window08_argmax040</code></td><td class="num"><strong>37.91</strong></td><td class="num">53.97</td><td class="num">29.71</td><td class="num">16.18</td></tr></tbody>
+        </table>
+        <pre>temporal_window_size: 21
+kmeans_k: 12
+window_radius: 8
+beta: 0.10
+argmax_bonus_alpha: 0.40</pre>
+      </div>
+      <div>
+        <h3>Charades Anchor</h3>
+        <table>
+          <thead><tr><th>Split</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+          <tbody>
+            <tr><td><code>00_standard</code></td><td class="num"><strong>48.32</strong></td><td class="num">71.24</td><td class="num">53.71</td><td class="num">29.06</td></tr>
+            <tr><td><code>03_novel_word</code></td><td class="num">51.78</td><td class="num">76.03</td><td class="num">58.99</td><td class="num">33.75</td></tr>
+          </tbody>
+        </table>
+        <pre>temporal_window_size: 13
+kmeans_k: 12
+window_radius: 8
+beta: 0.55
+onset_gradient_mode: positive</pre>
+      </div>
+    </div>
+
+    <h3>Module Lesson</h3>
+    <table>
+      <thead><tr><th>Test</th><th class="num">mIoU</th><th>Interpretation</th></tr></thead>
+      <tbody>
+        <tr><td>Plain geometry, no Core4</td><td class="num">43.92</td><td>Weak baseline under current geometry.</td></tr>
+        <tr><td>Only modern refinement</td><td class="num">46.57</td><td>Refinement is very strong alone.</td></tr>
+        <tr><td>Remove onset</td><td class="num">46.56</td><td>Onset is load-bearing.</td></tr>
+        <tr><td>Remove modern refinement</td><td class="num">44.56</td><td>Refinement is very load-bearing.</td></tr>
+        <tr><td>Final stack</td><td class="num">48.32</td><td>Full system remains strong and stable.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Group 2: Architecture With TAG Numbers</h2>
+    <p>This group answered the reviewer-style question: are the gains only from changing <code>w</code>, <code>k</code>, and <code>r</code>, or do the modules help under TAG's original hyperparameters?</p>
+    <table>
+      <thead><tr><th>Dataset</th><th>Baseline</th><th>Full Algorithm</th><th class="num">Gain</th></tr></thead>
+      <tbody>
+        <tr><td>Charades</td><td>45.87</td><td><strong>47.94-47.95</strong></td><td class="num">+2.08</td></tr>
+        <tr><td>ActivityNet</td><td>36.73</td><td><strong>37.49</strong></td><td class="num">+0.76</td></tr>
+      </tbody>
+    </table>
+    <p>The paper-facing claim survives TAG-original geometry. The strongest evidence is the Charades +2 mIoU result and the ActivityNet +0.76 mIoU result under TAG numbers.</p>
+  </section>
+
+  <section class="section">
+    <h2>Group 3: Onset Abs and LLM</h2>
+    <h3>Onset Abs Gate</h3>
+    <table>
+      <thead><tr><th>Dataset</th><th>Run</th><th class="num">mIoU</th><th class="num">R@0.5</th><th class="num">R@0.7</th><th>Read</th></tr></thead>
+      <tbody>
+        <tr><td>Charades</td><td><code>01_onset_abs_gradient</code></td><td class="num"><strong>48.45</strong></td><td class="num">54.33</td><td class="num">29.52</td><td>Improves over positive onset.</td></tr>
+        <tr><td>ActivityNet</td><td><code>01_onset_abs</code></td><td class="num"><strong>37.91</strong></td><td class="num">29.75</td><td class="num">16.19</td><td>Safe; slight R@0.5/R@0.7 lift.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>LLM Direction</h3>
+    <table>
+      <thead><tr><th>Charades Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+      <tbody>
+        <tr><td><code>04_llm_original_plus_descriptions</code></td><td class="num"><strong>48.87</strong></td><td class="num">72.53</td><td class="num">54.57</td><td class="num">29.68</td></tr>
+        <tr><td><code>03_llm_descriptions_joined</code></td><td class="num">48.58</td><td class="num">72.23</td><td class="num">54.14</td><td class="num">28.87</td></tr>
+        <tr><td><code>00_standard_annotations</code></td><td class="num">48.45</td><td class="num">71.53</td><td class="num">54.35</td><td class="num">29.52</td></tr>
+      </tbody>
+    </table>
+    <p class="small-note">Pending correction: the configs now include <code>old_tag_proposal_pool</code>, which reproduces old TAG's LLM method by localizing the original query and each LLM description separately, pooling proposals, then voting.</p>
+  </section>
+
+  <section class="section">
+    <h2>Group 4: Query-Similarity Pooling</h2>
+    <p>Charades found a new strongest non-LLM clean candidate, but the first ActivityNet transfer failed at the same tau.</p>
+    <table>
+      <thead><tr><th>Dataset</th><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th><th class="num">Delta</th></tr></thead>
+      <tbody>
+        <tr><td>Charades</td><td><code>query_similarity_pool</code>, tau=0.10</td><td class="num"><strong>48.77</strong></td><td class="num">72.23</td><td class="num">54.81</td><td class="num">29.70</td><td class="num"><strong>+0.32</strong></td></tr>
+        <tr><td>ActivityNet</td><td><code>query_similarity_pool</code>, tau=0.10</td><td class="num">37.60</td><td class="num">53.57</td><td class="num">29.00</td><td class="num">15.75</td><td class="num"><strong>-0.31</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Final Tau Gate</h3>
+    <table>
+      <thead><tr><th>If ActivityNet Tau Sweep...</th><th>Decision</th></tr></thead>
+      <tbody>
+        <tr><td>Finds a tau that improves or ties 37.91</td><td>Promote query-similarity pooling as a shared module upgrade.</td></tr>
+        <tr><td>Stays below 37.91 but Charades improves strongly</td><td>Treat query-similarity pooling as Charades-native optional enhancement.</td></tr>
+        <tr><td>Drops clearly across tau values</td><td>Keep TP box as universal architecture; discuss query-sim pool as Charades-only analysis.</td></tr>
+      </tbody>
+    </table>
+
+    <pre>experiments/cycle17/21_config_cycle17_charades_query_similarity_tau_sweep.yaml
+experiments/cycle17/22_config_cycle17_activitynet_query_similarity_tau_sweep.yaml</pre>
+  </section>
+
+  <section class="section">
+    <h2>After This: Stop Exploring, Validate</h2>
+    <p>Once the tau sweeps finish, the final winner should be known. At that point the work should move from broad experimentation into validation only.</p>
+    <ol>
+      <li>Finish the Charades and ActivityNet query-similarity tau sweeps.</li>
+      <li>Decide the final winner: shared query-similarity pooling, Charades-only query-similarity pooling, or universal TP box.</li>
+      <li>Stop broad experimenting after that decision.</li>
+      <li>Run validation only: OOD, robustness, old-TAG LLM comparison, additive documentation, and paper-facing tables.</li>
+      <li>Use the remaining Figure-4-style sweeps only to finalize numeric defaults around the locked module architecture.</li>
+    </ol>
+  </section>
+</main>
+</body>
+</html>
+
