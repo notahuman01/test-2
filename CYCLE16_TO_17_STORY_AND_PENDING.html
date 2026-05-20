@@ -368,7 +368,9 @@ argmax_bonus_alpha: 0.40</pre>
           <thead><tr><th>Split</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
           <tbody>
             <tr><td><code>00_standard</code></td><td class="num"><strong>48.32</strong></td><td class="num">71.24</td><td class="num">53.71</td><td class="num">29.06</td></tr>
+            <tr><td><code>01_test_ood</code></td><td class="num">47.06</td><td class="num">68.71</td><td class="num">50.90</td><td class="num">28.27</td></tr>
             <tr><td><code>03_novel_word</code></td><td class="num">51.78</td><td class="num">76.03</td><td class="num">58.99</td><td class="num">33.75</td></tr>
+            <tr><td><code>02_novel_composition</code></td><td class="num">45.28</td><td class="num">68.33</td><td class="num">48.79</td><td class="num">26.47</td></tr>
           </tbody>
         </table>
         <pre>temporal_window_size: 13
@@ -384,10 +386,31 @@ onset_gradient_mode: positive</pre>
       <thead><tr><th>Test</th><th class="num">mIoU</th><th>Interpretation</th></tr></thead>
       <tbody>
         <tr><td>Plain geometry, no Core4</td><td class="num">43.92</td><td>Weak baseline under current geometry.</td></tr>
+        <tr><td>Add onset</td><td class="num">45.76</td><td>Onset is a real contributor.</td></tr>
         <tr><td>Only modern refinement</td><td class="num">46.57</td><td>Refinement is very strong alone.</td></tr>
+        <tr><td>Final stack</td><td class="num">48.32</td><td>Full system remains strongest/stable.</td></tr>
         <tr><td>Remove onset</td><td class="num">46.56</td><td>Onset is load-bearing.</td></tr>
         <tr><td>Remove modern refinement</td><td class="num">44.56</td><td>Refinement is very load-bearing.</td></tr>
-        <tr><td>Final stack</td><td class="num">48.32</td><td>Full system remains strong and stable.</td></tr>
+        <tr><td>Remove scoring+voting</td><td class="num">48.43</td><td>On Charades, scoring/voting are not the main gain source.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>ActivityNet Scoring/Voting Removal Check</h3>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+      <tbody>
+        <tr><td><code>03_remove_scoring_and_voting</code></td><td class="num">36.86</td><td class="num">53.09</td><td class="num">30.22</td><td class="num">15.67</td></tr>
+        <tr><td><code>00_normal_scoring_voting_no_refinement</code></td><td class="num">36.72</td><td class="num">52.47</td><td class="num">30.47</td><td class="num">16.14</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Charades Beta10 Sweep</h3>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+      <tbody>
+        <tr><td><code>05_beta050</code></td><td class="num"><strong>48.38</strong></td><td class="num">71.34</td><td class="num">53.90</td><td class="num">29.01</td></tr>
+        <tr><td><code>06_beta055</code></td><td class="num">48.32</td><td class="num">71.24</td><td class="num">53.71</td><td class="num">29.06</td></tr>
+        <tr><td><code>07_beta060</code></td><td class="num">48.32</td><td class="num"><strong>71.61</strong></td><td class="num">53.58</td><td class="num">29.09</td></tr>
       </tbody>
     </table>
   </section>
@@ -395,6 +418,39 @@ onset_gradient_mode: positive</pre>
   <section class="section">
     <h2>Group 2: Architecture With TAG Numbers</h2>
     <p>This group answered the reviewer-style question: are the gains only from changing <code>w</code>, <code>k</code>, and <code>r</code>, or do the modules help under TAG's original hyperparameters?</p>
+
+    <h3>Charades TAG-Hyperparameter Algorithmic Ladder</h3>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+      <tbody>
+        <tr><td><code>00_tag_hparams_baseline_raw_cluster</code></td><td class="num">45.87</td><td class="num">67.93</td><td class="num">48.71</td><td class="num">26.85</td></tr>
+        <tr><td><code>04_add_bidirectional_refinement</code></td><td class="num"><strong>47.95</strong></td><td class="num">71.16</td><td class="num">51.94</td><td class="num">27.93</td></tr>
+        <tr><td><code>05_add_da_nms_full_algorithm</code></td><td class="num">47.94</td><td class="num">71.05</td><td class="num">52.23</td><td class="num">28.28</td></tr>
+      </tbody>
+    </table>
+
+    <h3>ActivityNet TAG-Hyperparameter Algorithmic Ladder</h3>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+      <tbody>
+        <tr><td><code>00_tag_hparams_baseline_raw_cluster</code></td><td class="num">36.73</td><td class="num">52.06</td><td class="num">28.75</td><td class="num">15.02</td></tr>
+        <tr><td><code>05_add_da_nms_full_algorithm</code></td><td class="num"><strong>37.49</strong></td><td class="num">53.21</td><td class="num">29.78</td><td class="num">15.50</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Correct Charades Main Additive Table</h3>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU</th></tr></thead>
+      <tbody>
+        <tr><td><code>00_tag_baseline</code></td><td class="num">45.87</td></tr>
+        <tr><td><code>02_add_onset_weighting</code></td><td class="num">46.38</td></tr>
+        <tr><td><code>03_add_normalized_clustering</code></td><td class="num">47.06</td></tr>
+        <tr><td><code>04_add_bidirectional_refinement</code></td><td class="num"><strong>47.99</strong></td></tr>
+        <tr><td><code>05_add_da_nms</code></td><td class="num">47.97</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Summary Gain Under TAG Numbers</h3>
     <table>
       <thead><tr><th>Dataset</th><th>Baseline</th><th>Full Algorithm</th><th class="num">Gain</th></tr></thead>
       <tbody>
@@ -407,12 +463,42 @@ onset_gradient_mode: positive</pre>
 
   <section class="section">
     <h2>Group 3: Onset Abs and LLM</h2>
+    <h3>Charades Onset Direction Foundation</h3>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+      <tbody>
+        <tr><td><code>01_onset_abs_gradient</code></td><td class="num"><strong>48.45</strong></td><td class="num">71.56</td><td class="num">54.33</td><td class="num">29.52</td></tr>
+        <tr><td><code>03_onset_positive_gradient</code></td><td class="num">48.32</td><td class="num">71.26</td><td class="num">53.71</td><td class="num">29.06</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Charades Tag-Hparam Sweep Highlights</h3>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td><code>24_w13_k12_r11</code></td><td class="num">48.42</td><td>Best geometry-only tweak.</td></tr>
+        <tr><td><code>05_w15_k12_r08</code></td><td class="num">48.35</td><td>Strong temporal window tweak.</td></tr>
+        <tr><td><code>00_current_best_anchor_w13_k12_r08</code></td><td class="num">48.32</td><td>Old positive-onset anchor.</td></tr>
+        <tr><td><code>01_tag_original_w21_k09_r07</code></td><td class="num">47.94</td><td>TAG original geometry remains competitive but lower.</td></tr>
+      </tbody>
+    </table>
+
     <h3>Onset Abs Gate</h3>
     <table>
-      <thead><tr><th>Dataset</th><th>Run</th><th class="num">mIoU</th><th class="num">R@0.5</th><th class="num">R@0.7</th><th>Read</th></tr></thead>
+      <thead><tr><th>Dataset</th><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th><th>Read</th></tr></thead>
       <tbody>
-        <tr><td>Charades</td><td><code>01_onset_abs_gradient</code></td><td class="num"><strong>48.45</strong></td><td class="num">54.33</td><td class="num">29.52</td><td>Improves over positive onset.</td></tr>
-        <tr><td>ActivityNet</td><td><code>01_onset_abs</code></td><td class="num"><strong>37.91</strong></td><td class="num">29.75</td><td class="num">16.19</td><td>Safe; slight R@0.5/R@0.7 lift.</td></tr>
+        <tr><td>Charades</td><td><code>01_onset_abs_gradient</code></td><td class="num"><strong>48.45</strong></td><td class="num">71.56</td><td class="num">54.33</td><td class="num">29.52</td><td>Improves over positive onset.</td></tr>
+        <tr><td>ActivityNet</td><td><code>01_onset_abs</code></td><td class="num"><strong>37.91</strong></td><td class="num">53.91</td><td class="num">29.75</td><td class="num">16.19</td><td>Safe; slight R@0.5/R@0.7 lift.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Charades Abs Beta Finalization</h3>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+      <tbody>
+        <tr><td><code>00_beta055_anchor</code></td><td class="num"><strong>48.45</strong></td><td class="num">71.53</td><td class="num">54.35</td><td class="num">29.52</td></tr>
+        <tr><td><code>01_beta050</code></td><td class="num">48.41</td><td class="num">71.21</td><td class="num">54.35</td><td class="num"><strong>29.65</strong></td></tr>
+        <tr><td><code>02_beta060</code></td><td class="num">48.41</td><td class="num"><strong>71.56</strong></td><td class="num"><strong>54.57</strong></td><td class="num">29.25</td></tr>
       </tbody>
     </table>
 
@@ -441,6 +527,20 @@ onset_gradient_mode: positive</pre>
   <section class="section">
     <h2>Group 4: Query-Similarity Pooling</h2>
     <p>Charades found a new strongest non-LLM clean candidate, but the first ActivityNet transfer failed at the same tau.</p>
+    <h3>Charades Pooling and Clustering Extended</h3>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+      <tbody>
+        <tr><td><code>05_query_similarity_pool</code></td><td class="num"><strong>48.77</strong></td><td class="num"><strong>72.23</strong></td><td class="num"><strong>54.81</strong></td><td class="num"><strong>29.70</strong></td></tr>
+        <tr><td><code>06_tp_box_ours</code></td><td class="num">48.45</td><td class="num">71.56</td><td class="num">54.33</td><td class="num">29.52</td></tr>
+        <tr><td><code>11_tcc_ours</code></td><td class="num">48.45</td><td class="num">71.56</td><td class="num">54.33</td><td class="num">29.52</td></tr>
+        <tr><td><code>03_gaussian_sigma8</code></td><td class="num">48.24</td><td class="num">71.32</td><td class="num">54.27</td><td class="num">29.30</td></tr>
+        <tr><td><code>07_plain_kmeans</code></td><td class="num">47.63</td><td class="num">70.67</td><td class="num">52.93</td><td class="num">28.63</td></tr>
+        <tr><td><code>09_tw_finch</code></td><td class="num">47.19</td><td class="num">70.11</td><td class="num">52.82</td><td class="num">28.17</td></tr>
+      </tbody>
+    </table>
+
+    <h3>First ActivityNet Transfer Check</h3>
     <table>
       <thead><tr><th>Dataset</th><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th><th class="num">Delta</th></tr></thead>
       <tbody>
@@ -466,6 +566,21 @@ experiments/cycle17/22_config_cycle17_activitynet_query_similarity_tau_sweep.yam
   <section class="section">
     <h2>After This: Stop Exploring, Validate</h2>
     <p>Once the tau sweeps finish, the final winner should be known. At that point the work should move from broad experimentation into validation only.</p>
+
+    <h3>What We Are Waiting For</h3>
+    <table>
+      <thead><tr><th>Experiment</th><th>Why It Matters</th></tr></thead>
+      <tbody>
+        <tr><td><code>experiments/cycle17/21_config_cycle17_charades_query_similarity_tau_sweep.yaml</code></td><td>Checks whether Charades can improve beyond 48.77 by tuning tau.</td></tr>
+        <tr><td><code>experiments/cycle17/22_config_cycle17_activitynet_query_similarity_tau_sweep.yaml</code></td><td>Decides whether query-similarity pooling can be shared or must stay Charades-only.</td></tr>
+        <tr><td><code>experiments/cycle17/18_charades_onset_abs_w_k_sweep</code></td><td>Rechecks Figure-4-style <code>w/k</code> tuning after switching to onset_abs.</td></tr>
+        <tr><td><code>experiments/cycle17/19_charades_onset_abs_r_beta_sweep</code></td><td>Rechecks <code>r/beta</code> after switching to onset_abs.</td></tr>
+        <tr><td><code>experiments/cycle17/12_charades_onset_abs_llm_outputs</code></td><td>Gives fair old-TAG-style LLM comparison through <code>05_llm_old_tag_proposal_pool</code>.</td></tr>
+        <tr><td><code>experiments/cycle17/16_activitynet_onset_abs_llm_outputs</code></td><td>Tests whether LLM query expansion helps ActivityNet too.</td></tr>
+        <tr><td><code>experiments/cycle17/07_charades_onset_abs_beta_finalize</code></td><td>Fills the final small beta gap around the current Charades best.</td></tr>
+      </tbody>
+    </table>
+
     <ol>
       <li>Finish the Charades and ActivityNet query-similarity tau sweeps.</li>
       <li>Decide the final winner: shared query-similarity pooling, Charades-only query-similarity pooling, or universal TP box.</li>

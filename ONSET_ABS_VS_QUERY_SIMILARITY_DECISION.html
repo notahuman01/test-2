@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Onset Abs vs Query Similarity Decision</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fa;
+      --paper: #ffffff;
+      --ink: #17202a;
+      --muted: #5d6a76;
+      --line: #d9e0e7;
+      --accent: #0f766e;
+      --accent-soft: #e7f5f3;
+      --good: #146c43;
+      --good-soft: #e9f7ef;
+      --warn: #8a5a00;
+      --warn-soft: #fff7df;
+      --bad: #9b1c31;
+      --bad-soft: #fdecef;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.58;
+    }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+
+    .site-nav__inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .site-nav__brand {
+      flex: 0 0 auto;
+      color: var(--ink);
+      font-weight: 750;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .site-nav__links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex: 1 1 auto;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .site-nav__links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 11px;
+      border-radius: 8px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .site-nav__links a:hover,
+    .site-nav__links a:focus-visible,
+    .site-nav__links a[aria-current="page"] {
+      background: var(--accent-soft);
+      color: var(--accent);
+      outline: none;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 46px 24px 80px;
+    }
+
+    .hero {
+      max-width: 920px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(2.1rem, 6vw, 4.2rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 42px 0 14px;
+      font-size: 28px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 28px 0 10px;
+      font-size: 20px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 840px;
+    }
+
+    .callout-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 26px 0 34px;
+    }
+
+    .callout {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .good { background: var(--good-soft); border-color: #bfe8ce; }
+    .good strong { color: var(--good); }
+    .warn { background: var(--warn-soft); border-color: #f3d994; }
+    .warn strong { color: var(--warn); }
+    .bad { background: var(--bad-soft); border-color: #f4b8c2; }
+    .bad strong { color: var(--bad); }
+
+    .section {
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      margin: 18px 0;
+      box-shadow: 0 10px 28px rgba(23, 32, 42, 0.045);
+    }
+
+    .section h2:first-child,
+    .section h3:first-child { margin-top: 0; }
+
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 5px;
+      background: #eef2f6;
+      color: #24313d;
+      font-size: .92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 14px 0;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #101820;
+      color: #ecf4f3;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 22px;
+      font-size: 14px;
+      background: var(--paper);
+    }
+
+    th, td {
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f0f4f7;
+      color: var(--ink);
+      font-weight: 750;
+    }
+
+    td.num, th.num { text-align: right; }
+
+    .delta-pos { color: var(--good); font-weight: 750; }
+    .delta-neg { color: var(--bad); font-weight: 750; }
+    .small-note { font-size: 14px; color: var(--muted); }
+
+    @media (max-width: 900px) {
+      .callout-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .site-nav__inner {
+        padding: 10px 12px;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .site-nav__links {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scrollbar-width: thin;
+      }
+
+      .site-nav__links a {
+        min-height: 36px;
+        padding: 7px 10px;
+        font-size: 13px;
+      }
+
+      main { padding: 32px 14px 56px; }
+      .section { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Document navigation">
+  <div class="site-nav__inner">
+    <a class="site-nav__brand" href="index.html">TAG Docs</a>
+    <div class="site-nav__links">
+      <a href="index.html">Home</a>
+      <a href="BEST_CHARADES_VS_ACTIVITYNET_RECIPE_MATH.html">Recipe Math</a>
+      <a href="BREAKTHROUGH_METRIC_CLAIM_OPTIONS.html">Breakthrough Claims</a>
+      <a href="CYCLE16_TO_17_STORY_AND_PENDING.html">Cycle17 Story</a>
+      <a href="ONSET_ABS_VS_QUERY_SIMILARITY_DECISION.html" aria-current="page">Onset vs QSim</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <p class="eyebrow">Cycle17 Decision Note</p>
+    <h1>Onset Abs vs Query-Similarity Pooling</h1>
+    <p class="lead">Empirical comparison and mathematical interpretation for deciding whether query-similarity pooling should become universal or remain a Charades-specific enhancement on top of the onset_abs architecture.</p>
+  </section>
+
+  <section class="callout-grid" aria-label="Decision summary">
+    <div class="callout good">
+      <strong>Universal module</strong>
+      <p><code>onset_gradient_mode: abs</code> is stable: Charades improves and ActivityNet ties mIoU while slightly lifting strict recall.</p>
+    </div>
+    <div class="callout warn">
+      <strong>Charades-only candidate</strong>
+      <p><code>query_similarity_tau: 0.10</code> improves Charades from 48.45 to 48.77 mIoU.</p>
+    </div>
+    <div class="callout bad">
+      <strong>ActivityNet transfer</strong>
+      <p>The best completed ActivityNet query-similarity full row is 37.81, below the 37.91 onset_abs anchor.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Direct Best-vs-Best Comparison</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Dataset</th>
+          <th>Best Onset Abs</th>
+          <th>Best Query Similarity</th>
+          <th class="num">Delta</th>
+          <th>Decision</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Charades-STA</td>
+          <td><code>00_beta055_anchor</code><br>48.45 mIoU, 71.53 / 54.35 / 29.52</td>
+          <td><code>03_qsim_tau010</code><br><strong>48.77</strong> mIoU, 72.23 / 54.81 / 29.70</td>
+          <td class="num delta-pos">+0.32</td>
+          <td>Query similarity helps Charades clean non-LLM.</td>
+        </tr>
+        <tr>
+          <td>ActivityNet Captions</td>
+          <td><code>01_onset_abs</code><br><strong>37.91</strong> mIoU, 53.91 / 29.75 / 16.19</td>
+          <td><code>02_qsim_tau040</code><br>37.81 mIoU, oracle 50.92, gap 13.12</td>
+          <td class="num delta-neg">-0.10</td>
+          <td>Query similarity does not beat the ActivityNet onset_abs/box anchor.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="small-note">ActivityNet caveat: in <code>23_activitynet_full_query_similarity_confirm</code>, <code>01_qsim_tau030</code> and <code>03_qsim_tau035</code> are marked not run, and the box anchor is not shown in that summary. The best completed qsim full row is tau=0.40 at 37.81 mIoU.</p>
+  </section>
+
+  <section class="section">
+    <h2>Onset Abs Results</h2>
+    <h3>Charades Onset Abs Beta Finalize</h3>
+    <p>Source: <code>experiments/cycle17/07_charades_onset_abs_beta_finalize/ablation_summary.md</code></p>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+      <tbody>
+        <tr><td><code>00_beta055_anchor</code></td><td class="num"><strong>48.45%</strong></td><td class="num">71.53%</td><td class="num">54.35%</td><td class="num">29.52%</td></tr>
+        <tr><td><code>01_beta050</code></td><td class="num">48.41%</td><td class="num">71.21%</td><td class="num">54.35%</td><td class="num"><strong>29.65%</strong></td></tr>
+        <tr><td><code>02_beta060</code></td><td class="num">48.41%</td><td class="num"><strong>71.56%</strong></td><td class="num"><strong>54.57%</strong></td><td class="num">29.25%</td></tr>
+      </tbody>
+    </table>
+
+    <h3>ActivityNet Onset Abs Gate</h3>
+    <p>Source: <code>experiments/cycle17/05_activitynet_onset_abs_gate/ablation_summary.md</code></p>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+      <tbody>
+        <tr><td><code>01_onset_abs</code></td><td class="num"><strong>37.91%</strong></td><td class="num">53.91%</td><td class="num"><strong>29.75%</strong></td><td class="num"><strong>16.19%</strong></td></tr>
+        <tr><td><code>00_positive_control</code></td><td class="num"><strong>37.91%</strong></td><td class="num"><strong>53.97%</strong></td><td class="num">29.71%</td><td class="num">16.18%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Query Similarity Results</h2>
+    <h3>Charades Query-Similarity Tau Sweep</h3>
+    <p>Source: <code>experiments/cycle17/21_charades_query_similarity_tau_sweep/ablation_summary.md</code></p>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU</th><th class="num">R@0.3</th><th class="num">R@0.5</th><th class="num">R@0.7</th></tr></thead>
+      <tbody>
+        <tr><td><code>03_qsim_tau010</code></td><td class="num"><strong>48.77%</strong></td><td class="num"><strong>72.23%</strong></td><td class="num"><strong>54.81%</strong></td><td class="num">29.70%</td></tr>
+        <tr><td><code>02_qsim_tau0075</code></td><td class="num">48.66%</td><td class="num">71.69%</td><td class="num">54.54%</td><td class="num"><strong>30.22%</strong></td></tr>
+        <tr><td><code>04_qsim_tau015</code></td><td class="num">48.62%</td><td class="num">71.77%</td><td class="num">54.54%</td><td class="num">29.54%</td></tr>
+        <tr><td><code>06_qsim_tau030</code></td><td class="num">48.56%</td><td class="num">71.91%</td><td class="num">54.38%</td><td class="num">29.41%</td></tr>
+        <tr><td><code>00_box_onset_abs_anchor</code></td><td class="num">48.45%</td><td class="num">71.56%</td><td class="num">54.33%</td><td class="num">29.52%</td></tr>
+        <tr><td><code>01_qsim_tau005</code></td><td class="num">48.45%</td><td class="num">71.56%</td><td class="num">53.98%</td><td class="num">29.11%</td></tr>
+        <tr><td><code>05_qsim_tau020</code></td><td class="num">48.39%</td><td class="num">71.16%</td><td class="num">54.41%</td><td class="num">29.46%</td></tr>
+        <tr><td><code>07_qsim_tau050</code></td><td class="num">48.30%</td><td class="num">71.18%</td><td class="num">54.03%</td><td class="num">29.60%</td></tr>
+        <tr><td><code>04_qsim_tau060</code></td><td class="num">48.27%</td><td class="num">71.34%</td><td class="num">54.22%</td><td class="num">29.46%</td></tr>
+        <tr><td><code>07_qsim_tau070</code></td><td class="num">48.13%</td><td class="num">71.05%</td><td class="num">54.06%</td><td class="num">29.27%</td></tr>
+        <tr><td><code>06_qsim_tau080</code></td><td class="num">48.12%</td><td class="num">70.99%</td><td class="num">54.09%</td><td class="num">29.19%</td></tr>
+        <tr><td><code>05_qsim_tau090</code></td><td class="num">48.09%</td><td class="num">70.99%</td><td class="num">54.09%</td><td class="num">29.30%</td></tr>
+      </tbody>
+    </table>
+
+    <h3>ActivityNet Full Query-Similarity Confirm</h3>
+    <p>Source: <code>experiments/cycle17/23_activitynet_full_query_similarity_confirm/ablation_summary.md</code></p>
+    <table>
+      <thead><tr><th>Run</th><th class="num">mIoU Top-1</th><th class="num">Oracle mIoU @5</th><th class="num">Ranking Gap</th></tr></thead>
+      <tbody>
+        <tr><td><code>02_qsim_tau040</code></td><td class="num"><strong>37.81%</strong></td><td class="num">50.92%</td><td class="num">13.12%</td></tr>
+        <tr><td><code>04_qsim_tau080</code></td><td class="num">37.75%</td><td class="num"><strong>50.95%</strong></td><td class="num">13.20%</td></tr>
+        <tr><td><code>04_qsim_tau070</code></td><td class="num">37.74%</td><td class="num">50.89%</td><td class="num">13.15%</td></tr>
+        <tr><td><code>04_qsim_tau090</code></td><td class="num">37.74%</td><td class="num">50.94%</td><td class="num">13.20%</td></tr>
+        <tr><td><code>01_qsim_tau030</code></td><td class="num">not run</td><td class="num">-</td><td class="num">-</td></tr>
+        <tr><td><code>03_qsim_tau035</code></td><td class="num">not run</td><td class="num">-</td><td class="num">-</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Why Onset Abs Makes Sense</h2>
+    <p><code>onset_abs</code> rewards the magnitude of temporal semantic change rather than only positive confidence rise. That matters because a useful temporal boundary can be a start, an end, or a transition between two actions.</p>
+    <pre>background -> action
+action -> background
+action A -> action B</pre>
+    <p>Positive onset assumes the useful boundary evidence is mostly rising confidence. Absolute onset says that large semantic change is useful boundary evidence regardless of direction. That fits the refinement stage because refinement needs boundary cues for both sides of a proposal.</p>
+    <pre>proposal score -> boundary-change weighting -> start/end refinement</pre>
+    <table>
+      <thead><tr><th>Dataset</th><th>Effect</th><th>Interpretation</th></tr></thead>
+      <tbody>
+        <tr><td>Charades</td><td>48.45 mIoU, above the positive-onset 48.32 anchor</td><td>Short, dense actions benefit from sharper boundary-change cues.</td></tr>
+        <tr><td>ActivityNet</td><td>37.91 mIoU tie, with slightly better R@0.5/R@0.7</td><td>Safe as a shared module; does not damage broad ActivityNet events.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Why Query Similarity Makes Sense</h2>
+    <p>Box temporal pooling smooths local temporal scores uniformly. Query-similarity pooling smooths through nearby frames according to how relevant each frame remains to the query.</p>
+    <pre>box pooling:
+pooled_score_t = average(score_neighbors)
+
+query-similarity pooling:
+pooled_score_t = weighted_average(score_neighbors, weight = query_frame_similarity)</pre>
+    <p>This is mathematically attractive because it prevents unrelated local frames from contributing equally to the smoothed score. It says: smooth along query-relevant temporal support, not blindly across the window.</p>
+    <table>
+      <thead><tr><th>Dataset</th><th>Observed Behavior</th><th>Likely Reason</th></tr></thead>
+      <tbody>
+        <tr><td>Charades</td><td>Improves to 48.77 at tau=0.10</td><td>Actions are shorter and denser; query-aware smoothing preserves the relevant action pocket.</td></tr>
+        <tr><td>ActivityNet</td><td>Best completed qsim full row is 37.81, below 37.91 onset_abs</td><td>Events are longer and descriptions broader; box pooling may preserve stable long-event support better.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Decision</h2>
+    <table>
+      <thead><tr><th>Use Case</th><th>Recommended Setting</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Universal ActivityNet + Charades architecture</td>
+          <td><pre>onset_gradient_mode: abs
+smoothing_type: box</pre></td>
+          <td>Stable on both datasets; ActivityNet does not support promoting query similarity as shared.</td>
+        </tr>
+        <tr>
+          <td>Charades-specific clean non-LLM best</td>
+          <td><pre>onset_gradient_mode: abs
+smoothing_type: query_similarity
+query_similarity_tau: 0.10</pre></td>
+          <td>Best Charades clean result in this comparison: 48.77 mIoU.</td>
+        </tr>
+      </tbody>
+    </table>
+    <pre>Paper story:
+Onset_abs is a universal boundary-change module.
+Query-similarity pooling is a Charades-beneficial semantic smoothing variant,
+but not a universal replacement for box temporal pooling because ActivityNet remains stronger with the box anchor.</pre>
+  </section>
+</main>
+</body>
+</html>
