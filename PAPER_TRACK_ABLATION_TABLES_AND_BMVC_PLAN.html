@@ -256,6 +256,166 @@
 <p>The paper story should be: TAG-style candidate generation is strong, but final candidate confirmation/ranking remains a bottleneck. The current method improves that bottleneck with lightweight numeric confirmation modules while preserving the no-training/no-LLM core claim.</p>
 <p>Important caveat: no set of experiments can make BMVC 2026 acceptance <strong>100% guaranteed</strong>. The goal is to remove the obvious reviewer objections: &quot;just hyperparameter tuning&quot;, &quot;not general&quot;, &quot;no ablation&quot;, &quot;no OOD&quot;, &quot;LLM mixed into no-LLM claim&quot;, and &quot;no runtime/cost evidence&quot;.</p>
 <hr>
+<h2>Cycle18 Paper-Proof Results Update</h2>
+<p>Cycle18 moved several items from &quot;planned&quot; to full-sample paper evidence. These are now the freshest paper-facing artifacts:</p>
+<pre><code>experiments/cycle18/00_activitynet_onset_abs_ood_noise
+experiments/cycle18/00_activitynet_onset_abs_ood_pad
+experiments/cycle18/02_activitynet_paper_additive_final
+experiments/cycle18/03_charades_paper_module_controls_final
+experiments/cycle18/04_activitynet_paper_module_controls_final
+experiments/cycle18/05_charades_paper_topk_oracle_audit
+experiments/cycle18/07_charades_paper_ood_onset_abs
+experiments/cycle18/11_charades_paper_module_removal_final
+experiments/cycle18/14_paper_priority2_diagnostics</code></pre>
+<p>Update: <code>experiments/cycle18/01_charades_paper_additive_final/ablation_summary.md</code> is now available and has been folded into this page, so both Charades and ActivityNet have Cycle18 additive evidence.</p>
+<h3>Cycle18 Main Paper Rows</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Dataset</th><th>Track</th><th>Source</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Charades-STA</td><td>Universal no-LLM</td><td><code>cycle18/05_charades_paper_topk_oracle_audit/02_universal_no_llm_onset_abs</code></td><td><strong>48.45</strong></td><td>71.56</td><td>54.33</td><td>29.52</td><td>Locked onset_abs box recipe</td></tr>
+<tr><td>Charades-STA</td><td>Specialized no-LLM qsim</td><td><code>cycle18/05_charades_paper_topk_oracle_audit/03_charades_qsim_extension</code></td><td><strong>48.77</strong></td><td>72.23</td><td>54.81</td><td>29.70</td><td>Best Charades no-LLM paper variant</td></tr>
+<tr><td>ActivityNet Captions</td><td>Universal no-LLM</td><td><code>cycle18/14_paper_priority2_diagnostics/05_activitynet_universal_no_llm</code></td><td><strong>37.91</strong></td><td>53.91</td><td>29.75</td><td>16.19</td><td>Locked onset_abs box recipe</td></tr>
+<tr><td>ActivityNet Captions</td><td>TAG-hparam baseline/control</td><td><code>cycle18/14_paper_priority2_diagnostics/04_activitynet_tag_hparams_baseline</code></td><td>36.73</td><td>52.06</td><td>28.75</td><td>15.02</td><td>Same-run TAG-geometry control</td></tr>
+<tr><td>ActivityNet Captions</td><td>Dataset-native refinement simplification</td><td><code>cycle18/04_activitynet_paper_module_controls_final/09_refinement_none</code></td><td><strong>37.97</strong></td><td>53.67</td><td>29.61</td><td>16.77</td><td>Strongest Cycle18 ActivityNet module-control row</td></tr>
+</tbody></table></div>
+<h3>Cycle18 ActivityNet Additive Table</h3>
+<p>Source: <code>experiments/cycle18/02_activitynet_paper_additive_final/ablation_summary.md</code></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Run (Suffix)</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr></thead>
+<tbody>
+<tr><td><strong>05_add_da_nms_final</strong></td><td><strong>37.91%</strong></td><td><strong>53.93%</strong></td><td><strong>29.30%</strong></td><td>16.20%</td></tr>
+<tr><td><strong>04_add_bidirectional_refinement</strong></td><td>37.76%</td><td>53.62%</td><td>28.93%</td><td>16.06%</td></tr>
+<tr><td><strong>03_add_normalized_clustering</strong></td><td>37.71%</td><td>53.59%</td><td>28.59%</td><td>16.12%</td></tr>
+<tr><td><strong>02_add_onset_abs</strong></td><td>37.58%</td><td>53.45%</td><td>29.07%</td><td>15.95%</td></tr>
+<tr><td><strong>01_add_cohens_d_scoring</strong></td><td>37.55%</td><td>53.36%</td><td><strong>29.33%</strong></td><td><strong>16.34%</strong></td></tr>
+<tr><td><strong>00_tag_style_baseline_current_geometry</strong></td><td>37.12%</td><td>53.10%</td><td>28.22%</td><td>15.32%</td></tr>
+</tbody></table></div>
+<p>Interpretation: ActivityNet now has a clean full-sample additive table. The full stack improves the current-geometry TAG-style baseline by <strong>+0.79 mIoU</strong>.</p>
+<h3>Cycle18 Charades Additive Table</h3>
+<p>Source: <code>experiments/cycle18/01_charades_paper_additive_final/ablation_summary.md</code></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Run (Suffix)</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr></thead>
+<tbody>
+<tr><td><strong>04_add_bidirectional_refinement</strong></td><td><strong>48.60%</strong></td><td><strong>71.72%</strong></td><td><strong>54.78%</strong></td><td>29.11%</td></tr>
+<tr><td><strong>05_add_da_nms_final</strong></td><td>48.45%</td><td>71.53%</td><td>54.35%</td><td><strong>29.52%</strong></td></tr>
+<tr><td><strong>03_add_normalized_clustering</strong></td><td>47.27%</td><td>70.40%</td><td>52.66%</td><td>27.58%</td></tr>
+<tr><td><strong>02_add_onset_abs</strong></td><td>46.31%</td><td>69.17%</td><td>51.18%</td><td>26.40%</td></tr>
+<tr><td><strong>01_add_cohens_d_scoring</strong></td><td>44.99%</td><td>66.83%</td><td>49.03%</td><td>26.02%</td></tr>
+<tr><td><strong>00_tag_style_baseline_current_geometry</strong></td><td>44.94%</td><td>66.83%</td><td>49.60%</td><td>25.65%</td></tr>
+</tbody></table></div>
+<p>Interpretation: Charades now has the matched full-sample additive table. The main gains come from the onset/normalized-clustering/refinement sequence:</p>
+<pre><code>baseline current geometry:       44.94
++ Cohen&#x27;s d scoring:             44.99  (+0.05)
++ onset_abs:                     46.31  (+1.37 vs baseline)
++ normalized clustering:         47.27  (+2.33 vs baseline)
++ bidirectional refinement:      48.60  (+3.66 vs baseline)
++ DA-NMS final aligned recipe:   48.45  (+3.51 vs baseline)</code></pre>
+<p>For the paper, this is a clean causal story: the full aligned recipe is far above the current-geometry baseline, but the single best Charades additive row is just before DA-NMS. DA-NMS should be framed as part of the universal ActivityNet-aligned architecture, while Charades&#x27; largest module gains are onset_abs, normalized clustering, and bidirectional refinement.</p>
+<h3>Cycle18 Charades Module Controls</h3>
+<p>Source: <code>experiments/cycle18/03_charades_paper_module_controls_final/ablation_summary.md</code></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Run (Suffix)</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr></thead>
+<tbody>
+<tr><td><strong>12_voting_original</strong></td><td><strong>48.60%</strong></td><td>71.72%</td><td><strong>54.78%</strong></td><td>29.11%</td></tr>
+<tr><td><strong>13_voting_soft_nms</strong></td><td><strong>48.60%</strong></td><td>71.72%</td><td><strong>54.78%</strong></td><td>29.11%</td></tr>
+<tr><td><strong>01_scoring_v00_static</strong></td><td>48.53%</td><td>71.40%</td><td>54.62%</td><td><strong>29.76%</strong></td></tr>
+<tr><td><strong>02_scoring_contrastive</strong></td><td>48.53%</td><td>71.40%</td><td>54.62%</td><td><strong>29.76%</strong></td></tr>
+<tr><td><strong>00_final_universal_control</strong></td><td>48.45%</td><td>71.53%</td><td>54.35%</td><td>29.52%</td></tr>
+<tr><td><strong>03_scoring_tstat</strong></td><td>48.40%</td><td><strong>72.20%</strong></td><td>52.98%</td><td>28.01%</td></tr>
+<tr><td><strong>06_onset_positive</strong></td><td>48.32%</td><td>71.24%</td><td>53.71%</td><td>29.06%</td></tr>
+<tr><td><strong>05_onset_negative</strong></td><td>47.75%</td><td>70.65%</td><td>53.87%</td><td>28.76%</td></tr>
+<tr><td><strong>07_cluster_raw</strong></td><td>47.58%</td><td>70.70%</td><td>53.06%</td><td>28.58%</td></tr>
+<tr><td><strong>09_refinement_tag_start_only</strong></td><td>47.04%</td><td>70.22%</td><td>52.18%</td><td>27.34%</td></tr>
+<tr><td><strong>10_refinement_modern_start_only</strong></td><td>46.95%</td><td>69.97%</td><td>52.31%</td><td>27.37%</td></tr>
+<tr><td><strong>04_onset_beta0</strong></td><td>46.55%</td><td>68.55%</td><td>50.97%</td><td>28.33%</td></tr>
+<tr><td><strong>11_refinement_modern_end_only</strong></td><td>46.28%</td><td>69.49%</td><td>50.91%</td><td>26.08%</td></tr>
+<tr><td><strong>08_refinement_none</strong></td><td>44.62%</td><td>67.37%</td><td>47.82%</td><td>24.35%</td></tr>
+<tr><td><strong>14_voting_hard_nms</strong></td><td>39.61%</td><td>60.73%</td><td>40.54%</td><td>19.22%</td></tr>
+</tbody></table></div>
+<p>Interpretation: the strongest Charades evidence is not that every module monotonically improves. The robust paper claim is that <strong>onset_abs, normalized clustering, and modern refinement are essential</strong>, while Cohen&#x27;s d and DA-NMS are part of the universal ActivityNet-aligned architecture but are not individually required for peak Charades mIoU.</p>
+<h3>Cycle18 ActivityNet Module Controls</h3>
+<p>Source: <code>experiments/cycle18/04_activitynet_paper_module_controls_final/ablation_summary.md</code></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Run (Suffix)</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr></thead>
+<tbody>
+<tr><td><strong>09_refinement_none</strong></td><td><strong>37.97%</strong></td><td>53.67%</td><td>29.61%</td><td><strong>16.77%</strong></td></tr>
+<tr><td><strong>07_onset_positive</strong></td><td>37.95%</td><td><strong>54.04%</strong></td><td>29.53%</td><td>16.12%</td></tr>
+<tr><td><strong>11_refinement_modern_start_only</strong></td><td>37.93%</td><td>53.90%</td><td>29.30%</td><td>16.43%</td></tr>
+<tr><td><strong>12_refinement_modern_end_only</strong></td><td>37.93%</td><td>53.73%</td><td>29.44%</td><td>16.74%</td></tr>
+<tr><td><strong>00_final_universal_control</strong></td><td>37.91%</td><td>53.93%</td><td>29.33%</td><td>16.17%</td></tr>
+<tr><td><strong>10_refinement_tag_start_only</strong></td><td>37.88%</td><td>53.82%</td><td>29.16%</td><td>16.34%</td></tr>
+<tr><td><strong>05_onset_beta0</strong></td><td>37.79%</td><td>53.73%</td><td>29.73%</td><td>16.51%</td></tr>
+<tr><td><strong>06_onset_negative</strong></td><td>37.77%</td><td>53.59%</td><td>29.47%</td><td>16.09%</td></tr>
+<tr><td><strong>13_voting_original</strong></td><td>37.76%</td><td>53.62%</td><td>28.96%</td><td>16.03%</td></tr>
+<tr><td><strong>14_voting_soft_nms</strong></td><td>37.76%</td><td>53.62%</td><td>28.96%</td><td>16.03%</td></tr>
+<tr><td><strong>01_scoring_v00_static</strong></td><td>37.64%</td><td>53.84%</td><td>28.45%</td><td>15.77%</td></tr>
+<tr><td><strong>08_cluster_raw</strong></td><td>37.63%</td><td>53.82%</td><td>29.19%</td><td>15.95%</td></tr>
+<tr><td><strong>02_scoring_contrastive</strong></td><td>37.20%</td><td>53.33%</td><td><strong>30.95%</strong></td><td>16.20%</td></tr>
+<tr><td><strong>15_voting_hard_nms</strong></td><td>36.82%</td><td>51.85%</td><td>25.17%</td><td>14.66%</td></tr>
+<tr><td><strong>03_scoring_tstat</strong></td><td>36.78%</td><td>51.54%</td><td>26.65%</td><td>14.95%</td></tr>
+<tr><td><strong>04_scoring_meantp</strong></td><td>33.73%</td><td>51.45%</td><td>30.04%</td><td>12.73%</td></tr>
+</tbody></table></div>
+<p>Interpretation: ActivityNet supports the universal architecture, but also says refinement can be simplified. Cohen&#x27;s d, normalized clustering, and DA-NMS are helpful compared with their direct alternatives, while <code>meantp</code>, <code>tstat</code>, and hard NMS are weak.</p>
+<h3>Cycle18 Charades Top-k / Oracle Audit Rows</h3>
+<p>Source: <code>experiments/cycle18/05_charades_paper_topk_oracle_audit/ablation_summary.md</code></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Run (Suffix)</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr></thead>
+<tbody>
+<tr><td><strong>03_charades_qsim_extension</strong></td><td><strong>48.77%</strong></td><td><strong>72.23%</strong></td><td><strong>54.81%</strong></td><td><strong>29.70%</strong></td></tr>
+<tr><td><strong>02_universal_no_llm_onset_abs</strong></td><td>48.45%</td><td>71.56%</td><td>54.33%</td><td>29.52%</td></tr>
+<tr><td><strong>01_tag_hparams_baseline</strong></td><td>45.87%</td><td>67.93%</td><td>48.71%</td><td>26.85%</td></tr>
+</tbody></table></div>
+<p>Interpretation: under the Cycle18 audit package, the universal no-LLM Charades row improves over the TAG-hparam baseline by <strong>+2.58 mIoU</strong>, and the qsim extension improves by <strong>+2.90 mIoU</strong>.</p>
+<h3>Cycle18 Charades Module Removal</h3>
+<p>Source: <code>experiments/cycle18/11_charades_paper_module_removal_final/ablation_summary.md</code></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Run (Suffix)</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr></thead>
+<tbody>
+<tr><td><strong>05_minus_da_nms_use_original</strong></td><td><strong>48.60%</strong></td><td>71.75%</td><td>54.73%</td><td>29.11%</td></tr>
+<tr><td><strong>06_minus_da_nms_use_soft_nms</strong></td><td><strong>48.60%</strong></td><td>71.75%</td><td>54.73%</td><td>29.11%</td></tr>
+<tr><td><strong>01_minus_cohens_d_use_v00_static</strong></td><td>48.53%</td><td>71.40%</td><td>54.57%</td><td><strong>29.76%</strong></td></tr>
+<tr><td><strong>00_final_universal_control</strong></td><td>48.45%</td><td>71.56%</td><td>54.33%</td><td>29.52%</td></tr>
+<tr><td><strong>03_minus_normalized_clustering_raw</strong></td><td>47.59%</td><td>70.70%</td><td>53.06%</td><td>28.58%</td></tr>
+<tr><td><strong>02_minus_onset_beta0</strong></td><td>46.56%</td><td>68.55%</td><td>50.97%</td><td>28.33%</td></tr>
+<tr><td><strong>04_minus_modern_refinement_none</strong></td><td>44.62%</td><td>67.37%</td><td>47.82%</td><td>24.35%</td></tr>
+</tbody></table></div>
+<p>Interpretation: the strongest removal evidence for Charades is:</p>
+<pre><code>minus modern refinement: -3.83 mIoU
+minus onset_abs:         -1.89 mIoU
+minus normalized cluster: -0.86 mIoU</code></pre>
+<p>Cohen&#x27;s d and DA-NMS are not Charades-only peak drivers, but they remain defensible as part of the universal ActivityNet-compatible architecture.</p>
+<h3>Cycle18 Exact Charades OOD Status</h3>
+<p>Source: <code>experiments/cycle18/07_charades_paper_ood_onset_abs/ablation_summary.md</code></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Run (Suffix)</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr></thead>
+<tbody>
+<tr><td><strong>00_standard</strong></td><td><strong>48.45%</strong></td><td><strong>71.56%</strong></td><td><strong>54.33%</strong></td><td><strong>29.52%</strong></td></tr>
+<tr><td><strong>06_rho10</strong></td><td>47.43%</td><td>70.67%</td><td>52.31%</td><td>28.79%</td></tr>
+<tr><td><strong>07_rho15</strong></td><td>47.21%</td><td>70.70%</td><td>51.56%</td><td>28.39%</td></tr>
+<tr><td><strong>04_pad10</strong></td><td>46.66%</td><td>70.40%</td><td>49.73%</td><td>26.34%</td></tr>
+<tr><td><strong>05_pad15</strong></td><td>45.97%</td><td>69.87%</td><td>47.28%</td><td>24.70%</td></tr>
+</tbody></table></div>
+<p>The exact onset_abs Charades OOD suite now has standard, fixed-padding, and rho-noise results. However, these three rows failed on Kaggle because the annotation JSONs were not found at the resolved path:</p>
+<pre><code>01_test_ood_charades_cd
+02_novel_composition
+03_novel_word</code></pre>
+<p>The run logs show <code>FileNotFoundError</code> for:</p>
+<pre><code>/kaggle/working/../../../../../dataset/charades-sta/charades_test_ood.json
+/kaggle/working/../../../../../dataset/charades-sta/novel_composition.json
+/kaggle/working/../../../../../dataset/charades-sta/novel_word.json</code></pre>
+<p>Paper action: copy those JSONs into the Kaggle working/input path or use path aliases that resolve on the runner, then rerun only the three failed OOD rows.</p>
+<h3>Cycle18 Priority-2 Diagnostics Status</h3>
+<p>Source: <code>experiments/cycle18/14_paper_priority2_diagnostics/experiments/cycle18/14_paper_priority2_diagnostics/ablation_summary.md</code></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Run (Suffix)</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr></thead>
+<tbody>
+<tr><td><strong>02_charades_qsim_extension</strong></td><td><strong>48.77%</strong></td><td><strong>72.23%</strong></td><td><strong>54.81%</strong></td><td><strong>29.70%</strong></td></tr>
+<tr><td><strong>01_charades_universal_no_llm</strong></td><td>48.45%</td><td>71.56%</td><td>54.33%</td><td>29.52%</td></tr>
+<tr><td><strong>05_activitynet_universal_no_llm</strong></td><td>37.91%</td><td>53.91%</td><td>29.75%</td><td>16.19%</td></tr>
+<tr><td><strong>04_activitynet_tag_hparams_baseline</strong></td><td>36.73%</td><td>52.06%</td><td>28.75%</td><td>15.02%</td></tr>
+</tbody></table></div>
+<p>Only four rows completed locally from the Priority-2 diagnostics package. The completed rows are enough to support runtime, failure-mode, query-length, video-length, and width-drift post-processing for TAG-vs-ours on ActivityNet and for universal-vs-qsim on Charades, provided the raw audits are present in the run folders.</p>
+<hr>
 <h2>First Comparison: TAG Baseline vs Current Tracks</h2>
 <p>TAG baseline source:</p>
 <pre><code>analysis/01_Tag_confiramtion/Tag_paper_metrics.md</code></pre>
@@ -387,7 +547,7 @@ It is far above the original TAG no-LLM baseline.
 It is competitive with or above many zero-shot + LLM systems.
 It is still below the strongest fully supervised methods and below UG-Ground / InternVideo2.5-8B on Charades and ActivityNet mIoU.</code></pre>
 <p>Paper-safe wording:</p>
-<blockquote>Compared with TAG, the proposed Cycle 17 numeric confirmation stack substantially improves zero-shot/no-LLM grounding on both Charades-STA and ActivityNet Captions. Despite using no LLM at inference, it is competitive with several recent zero-shot LLM-based grounding systems, while remaining below the strongest supervised and largest-VLM zero-shot systems.</blockquote>
+<p>&gt; Compared with TAG, the proposed Cycle 17 numeric confirmation stack substantially improves zero-shot/no-LLM grounding on both Charades-STA and ActivityNet Captions. Despite using no LLM at inference, it is competitive with several recent zero-shot LLM-based grounding systems, while remaining below the strongest supervised and largest-VLM zero-shot systems.</p>
 <hr>
 <h2>TAG Original Hyperparameter Proof</h2>
 <p>This is the anti-&quot;just tuned <code>w/k/r</code>&quot; proof.</p>
@@ -396,7 +556,7 @@ It is still below the strongest fully supervised methods and below UG-Ground / I
 kmeans_k: 9
 window_radius: 7</code></pre>
 <p>Our tuned Charades geometry later uses <code>w=13,k=12,r=8</code>, so this proof is critical. The question is:</p>
-<blockquote>Do the algorithmic modules still improve when forced to use TAG&#x27;s original <code>w=21,k=9,r=7</code>?</blockquote>
+<p>&gt; Do the algorithmic modules still improve when forced to use TAG&#x27;s original <code>w=21,k=9,r=7</code>?</p>
 <p>The answer is <strong>yes</strong>.</p>
 <h3>Charades: Algorithmic Ladder With TAG Original Hyperparameters</h3>
 <p>Source:</p>
@@ -476,7 +636,7 @@ Therefore, the contribution is not only hyperparameter tuning.</code></pre>
 <tr><td>&quot;Numeric tuning still helps.&quot;</td><td>Charades tuned geometry reaches 48.32-48.35.</td><td><strong>Yes, but secondary</strong></td></tr>
 </tbody></table></div>
 <p>Recommended paper sentence:</p>
-<blockquote>To separate methodological gains from hyperparameter tuning, we evaluate our full numeric confirmation stack under TAG&#x27;s original Figure-4 setting (<code>w=21,k=9,r=7</code>). The method still improves Charades from 45.87 to 47.97-47.99 mIoU. On ActivityNet, it reaches 37.49 mIoU, improving over both the same-run TAG-hparam control at 36.73 and the TAG paper baseline at 36.55. This confirms that the improvement is not merely due to changing temporal window, cluster count, or coherence radius.</blockquote>
+<p>&gt; To separate methodological gains from hyperparameter tuning, we evaluate our full numeric confirmation stack under TAG&#x27;s original Figure-4 setting (<code>w=21,k=9,r=7</code>). The method still improves Charades from 45.87 to 47.97-47.99 mIoU. On ActivityNet, it reaches 37.49 mIoU, improving over both the same-run TAG-hparam control at 36.73 and the TAG paper baseline at 36.55. This confirms that the improvement is not merely due to changing temporal window, cluster count, or coherence radius.</p>
 <hr>
 <h2>Track 1: Universal no-LLM ActivityNet</h2>
 <p>Source:</p>
@@ -630,7 +790,7 @@ gap:        13.12</code></pre>
 <h2>OOD and Robustness Evidence</h2>
 <h3>ActivityNet Noise OOD</h3>
 <p>Source:</p>
-<pre><code>experiments/cycle17/10_activitynet_onset_abs_ood_noise/ablation_summary.md</code></pre>
+<pre><code>experiments/cycle18/00_activitynet_onset_abs_ood_noise/ablation_summary.md</code></pre>
 <div class="table-wrap"><table>
 <thead><tr><th>Run (Suffix)</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr></thead>
 <tbody>
@@ -639,7 +799,7 @@ gap:        13.12</code></pre>
 </tbody></table></div>
 <h3>ActivityNet Padding OOD</h3>
 <p>Source:</p>
-<pre><code>experiments/cycle17/11_activitynet_onset_abs_ood_pad/ablation_summary.md</code></pre>
+<pre><code>experiments/cycle18/00_activitynet_onset_abs_ood_pad/ablation_summary.md</code></pre>
 <div class="table-wrap"><table>
 <thead><tr><th>Run (Suffix)</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr></thead>
 <tbody>
@@ -655,26 +815,31 @@ rho60:    36.83  (-1.08)
 pad30:    37.26  (-0.65)
 pad60:    36.94  (-0.97)</code></pre>
 <p>This is useful for the paper because it shows the locked no-LLM architecture has measured robustness behavior rather than only clean-split performance.</p>
-<h3>Charades OOD</h3>
+<h3>Charades Exact Onset-Abs OOD</h3>
 <p>Source:</p>
-<pre><code>experiments/cycle16/12_charades_window08_ood_suite/ablation_summary.md</code></pre>
-<p>Important note: this is the closest completed full-sample Charades OOD table for the stable window8 family. It is not the exact cycle17 <code>onset_abs</code> final row. For the cleanest BMVC paper table, rerun Charades OOD on the exact locked <code>onset_abs</code> no-LLM recipe.</p>
+<pre><code>experiments/cycle18/07_charades_paper_ood_onset_abs/ablation_summary.md</code></pre>
 <div class="table-wrap"><table>
 <thead><tr><th>Run (Suffix)</th><th>mIoU</th><th>R@0.3</th><th>R@0.5</th><th>R@0.7</th></tr></thead>
 <tbody>
-<tr><td><strong>03_novel_word</strong></td><td><strong>51.78%</strong></td><td><strong>76.03%</strong></td><td><strong>58.99%</strong></td><td><strong>33.75%</strong></td></tr>
-<tr><td><strong>00_standard</strong></td><td>48.32%</td><td>71.24%</td><td>53.71%</td><td>29.06%</td></tr>
-<tr><td><strong>01_test_ood</strong></td><td>47.06%</td><td>68.71%</td><td>50.90%</td><td>28.27%</td></tr>
-<tr><td><strong>06_rho10</strong></td><td>46.79%</td><td>69.54%</td><td>51.18%</td><td>28.17%</td></tr>
-<tr><td><strong>07_rho15</strong></td><td>46.50%</td><td>69.62%</td><td>50.73%</td><td>27.42%</td></tr>
-<tr><td><strong>04_pad10</strong></td><td>46.26%</td><td>69.49%</td><td>48.71%</td><td>25.91%</td></tr>
-<tr><td><strong>05_pad15</strong></td><td>45.79%</td><td>68.92%</td><td>46.91%</td><td>24.62%</td></tr>
-<tr><td><strong>02_novel_composition</strong></td><td>45.28%</td><td>68.33%</td><td>48.79%</td><td>26.47%</td></tr>
+<tr><td><strong>00_standard</strong></td><td><strong>48.45%</strong></td><td><strong>71.56%</strong></td><td><strong>54.33%</strong></td><td><strong>29.52%</strong></td></tr>
+<tr><td><strong>06_rho10</strong></td><td>47.43%</td><td>70.67%</td><td>52.31%</td><td>28.79%</td></tr>
+<tr><td><strong>07_rho15</strong></td><td>47.21%</td><td>70.70%</td><td>51.56%</td><td>28.39%</td></tr>
+<tr><td><strong>04_pad10</strong></td><td>46.66%</td><td>70.40%</td><td>49.73%</td><td>26.34%</td></tr>
+<tr><td><strong>05_pad15</strong></td><td>45.97%</td><td>69.87%</td><td>47.28%</td><td>24.70%</td></tr>
 </tbody></table></div>
 <h3>Charades OOD Interpretation</h3>
-<p>The completed Charades OOD suite is strong, especially on novel-word robustness, but because the current paper track moved from positive onset to <code>onset_abs</code>, this table should be treated as strong prior evidence rather than the final exact paper table.</p>
+<p>The exact locked <code>onset_abs</code> Charades recipe now has standard, fixed-padding, and rho-noise robustness evidence:</p>
+<pre><code>standard: 48.45
+rho10:    47.43  (-1.02)
+rho15:    47.21  (-1.24)
+pad10:    46.66  (-1.79)
+pad15:    45.97  (-2.48)</code></pre>
+<p>Three OOD split rows did not complete because Kaggle could not resolve the annotation JSON paths:</p>
+<pre><code>01_test_ood_charades_cd: FileNotFoundError for charades_test_ood.json
+02_novel_composition:    FileNotFoundError for novel_composition.json
+03_novel_word:           FileNotFoundError for novel_word.json</code></pre>
 <p>Recommended final paper action:</p>
-<pre><code>Run a cycle17/18 Charades OOD suite using the exact locked onset_abs no-LLM recipe.</code></pre>
+<pre><code>Fix the runner paths for the three Charades OOD annotation JSONs and rerun only those rows.</code></pre>
 <hr>
 <h2>Track 4: Charades LLM-Assisted Comparison</h2>
 <p>Source:</p>
@@ -711,8 +876,8 @@ When plugged into old TAG-style LLM proposal pooling, the same architecture reac
 <tr><td>Candidate selection is the bottleneck</td><td>ActivityNet qsim oracle@5 around <code>50.9</code> vs top-1 <code>37.8</code></td><td>Promising, but needs systematic oracle table</td></tr>
 <tr><td>Onset/refinement are real modules</td><td>Charades onset/refinement foundation table</td><td>Strong: no-onset and no-refinement are clearly worse</td></tr>
 <tr><td>Pooling/clustering alternatives were checked</td><td>Charades pooling/clustering extended table</td><td>Strong: query-similarity, TP box, TCC, Gaussian, K-Means, and TW-FINCH are compared</td></tr>
-<tr><td>ActivityNet OOD has been measured</td><td>Noise/pad OOD tables</td><td>Useful: standard 37.91 drops to 36.83-37.26 under perturbation</td></tr>
-<tr><td>Charades OOD has strong prior evidence</td><td>Cycle16 window8 OOD suite</td><td>Useful but should be rerun on exact cycle17 onset_abs recipe for final paper cleanliness</td></tr>
+<tr><td>ActivityNet OOD has been measured</td><td>Cycle18 noise/pad OOD tables</td><td>Useful: standard 37.91 drops to 36.83-37.26 under perturbation</td></tr>
+<tr><td>Charades exact onset_abs OOD partly completed</td><td>Cycle18 standard, pad10/pad15, rho10/rho15</td><td>Useful: standard 48.45 drops to 45.97-47.43 under perturbation; Charades-CD/novel rows failed from missing JSON paths and must be rerun</td></tr>
 </tbody></table></div>
 <hr>
 <h2>What You Still Need for a Serious BMVC 2026 Submission</h2>
@@ -723,29 +888,29 @@ When plugged into old TAG-style LLM proposal pooling, the same architecture reac
 <tbody>
 <tr><td>DONE</td><td>Official main result table vs TAG and competitors</td><td>Added competitor landscape table with TAG original and TAG Cycle 17 Best</td><td>Source-check every competitor number/citation before submission</td></tr>
 <tr><td>DONE</td><td>TAG original hyperparameter proof</td><td>Proven with <code>cycle16/20</code>, <code>cycle16/21</code>, <code>cycle16/30</code>, <code>cycle16/28</code>; Charades gains +2.10 to +2.12 under TAG geometry, ActivityNet reaches 37.49: +0.76 vs same-run control 36.73 and +0.94 vs TAG paper baseline 36.55</td><td>Clean into one compact final paper table</td></tr>
-<tr><td>MISSING</td><td>Top-k oracle table</td><td>Some oracle@5 evidence exists in qsim ActivityNet rows, but not systematic</td><td>Need Top-1, oracle@3, oracle@5, oracle@10 for TAG baseline and current method on Charades + ActivityNet</td></tr>
-<tr><td>PARTIAL</td><td>Additive module table on final locked recipe</td><td>TAG-hparam additive tables exist; onset/refinement and pooling/clustering tables exist</td><td>Need one final paper-facing additive table around the exact locked recipe, or explicitly use TAG-hparam additive proof as the official ablation</td></tr>
-<tr><td>PARTIAL</td><td>Scoring function alternatives</td><td>Module-control/scout evidence exists for Cohen&#x27;s d vs alternatives</td><td>Clean into one TAG-style table: static contrast/TAG score, t-statistic, Cohen&#x27;s d</td></tr>
+<tr><td>PARTIAL</td><td>Top-k oracle table</td><td>Cycle18 Charades and Priority-2 diagnostic rows completed; ActivityNet diagnostic TAG-vs-ours completed</td><td>Extract oracle@3/@5/@10 and ranking gap from raw audit/results into a compact paper table</td></tr>
+<tr><td>DONE</td><td>Additive module table on final locked recipe</td><td>Cycle18 Charades and ActivityNet additive tables completed</td><td>Paper framing should mention non-monotonic DA-NMS effect on Charades while still supporting the aligned architecture</td></tr>
+<tr><td>DONE</td><td>Scoring function alternatives</td><td>Cycle18 Charades and ActivityNet module-control tables compare v00/static, contrastive, tstat, meantp where applicable, and Cohen&#x27;s d control</td><td>Convert into one concise TAG-style table for the paper</td></tr>
 <tr><td>DONE</td><td>Onset weighting alternatives</td><td><code>cycle17/01_charades_onset_refinement_foundation_combined</code> compares beta=0, abs, negative, positive</td><td>For final paper, mirror on ActivityNet only if reviewers may question dataset specificity</td></tr>
 <tr><td>DONE</td><td>Refinement scope</td><td><code>cycle17/01</code> covers Charades none/start/end/both; <code>cycle17/09</code> covers ActivityNet simplification</td><td>Present as bidirectional refinement helps Charades; ActivityNet can be simplified without breaking the universal story</td></tr>
 <tr><td>PARTIAL</td><td>Hyperparameter sensitivity</td><td>Beta/window/k/r sweeps exist across cycle16/cycle17</td><td>Convert into Figure-4-style paper plots/tables; avoid making the paper look like pure tuning</td></tr>
-<tr><td>PARTIAL</td><td>Module removal table</td><td>Cycle16 module-removal evidence exists and shows interactions are non-monotonic</td><td>Need final recipe minus each core module if we want the strongest reviewer defense</td></tr>
-<tr><td>PARTIAL</td><td>OOD/robustness for final locked no-LLM architecture</td><td>ActivityNet noise/pad exists for onset_abs; Charades OOD exists for cycle16 window8</td><td>Rerun Charades OOD on exact cycle17 onset_abs no-LLM recipe for clean final table</td></tr>
-<tr><td>PARTIAL</td><td>Clustering feature source: raw vs normalized</td><td>Normalized clustering is used in the current recipe; pooling/clustering comparisons exist</td><td>Add a one-row raw-vs-normalized control if not already present in the final locked module-removal table</td></tr>
-<tr><td>PARTIAL</td><td>NMS alternatives: TAG/soft NMS vs DA-NMS</td><td>DA-NMS appears in additive/module-control evidence</td><td>Either include inside the main additive table or add one compact NMS comparison row</td></tr>
+<tr><td>DONE</td><td>Module removal table</td><td>Cycle18 Charades final module-removal table completed; ActivityNet module-control table covers equivalent removals/alternatives</td><td>Paper framing must acknowledge non-monotonic Charades interactions</td></tr>
+<tr><td>PARTIAL</td><td>OOD/robustness for final locked no-LLM architecture</td><td>ActivityNet noise/pad completed; Charades exact onset_abs standard/pad/rho completed</td><td>Rerun only failed Charades-CD, novel-composition, and novel-word rows after fixing annotation paths</td></tr>
+<tr><td>DONE</td><td>Clustering feature source: raw vs normalized</td><td>Cycle18 module-control/removal tables include raw-vs-normalized controls for both datasets</td><td>Convert to compact paper row</td></tr>
+<tr><td>DONE</td><td>NMS alternatives: TAG/soft NMS vs DA-NMS</td><td>Cycle18 module-control/removal tables include original/soft/hard NMS vs DA-NMS</td><td>Convert to compact paper row and explain Charades non-monotonicity</td></tr>
 </tbody></table></div>
 <h3>Priority 2: Very Important</h3>
 <div class="table-wrap"><table>
 <thead><tr><th>Status</th><th>Need</th><th>Current Evidence / Artifact</th><th>What Is Still Missing</th></tr></thead>
 <tbody>
-<tr><td>MISSING</td><td>Runtime/cost table</td><td>No final timing/cost table yet</td><td>Measure TAG baseline, universal no-LLM, Charades qsim, and LLM-assisted old_tag_proposal_pool</td></tr>
-<tr><td>MISSING</td><td>Query length / video length buckets</td><td>Not yet summarized</td><td>Bucket results by query length and video duration to show when the method helps</td></tr>
-<tr><td>MISSING</td><td>Proposal width drift analysis</td><td>Not yet summarized</td><td>Compare predicted width vs GT width for TAG vs current method</td></tr>
-<tr><td>MISSING</td><td>Failure mode breakdown table</td><td>No final diagnostic table yet</td><td>Compare TAG vs current method for timeline failures, proposal failures, ranking failures, and scoring failures</td></tr>
+<tr><td>READY</td><td>Runtime/cost table</td><td>Cycle18 Priority-2 diagnostic rows completed for Charades qsim/universal and ActivityNet TAG/universal</td><td>Extract <code>metrics.time</code> from each <code>results.json</code>; LLM-assisted timing still needs completed LLM rows if included</td></tr>
+<tr><td>READY</td><td>Query length / video length buckets</td><td>Cycle18 Priority-2 diagnostic rows have raw audit if copied back with <code>save_raw_audit=true</code></td><td>Run post-processing bucket script/table from <code>pipeline_audit.json</code></td></tr>
+<tr><td>READY</td><td>Proposal width drift analysis</td><td>Cycle18 Priority-2 diagnostic rows include <code>pred</code>, <code>gt</code>, duration, and oracle metrics</td><td>Summarize predicted width vs GT width for TAG vs ours</td></tr>
+<tr><td>READY</td><td>Failure mode breakdown table</td><td>Cycle18 raw-audit rows include <code>failure_timeline_bad</code>, <code>failure_proposal_bad</code>, <code>failure_ranking_bad</code>, <code>failure_scoring_bad</code>, etc.</td><td>Aggregate into paper table</td></tr>
 <tr><td>READY</td><td>Skewness stratification</td><td><code>src/utils/paper_audit_stratification.py</code> added; Cycle18 oracle-audit configs export raw audit</td><td>Run Cycle18 oracle audits, then generate TAG Table-5-style quartile tables with <code>experiments/cycle18/PAPER_SKEWNESS_FRAGMENTATION_GUIDE.md</code></td></tr>
 <tr><td>READY</td><td>Semantic fragmentation reduction</td><td><code>graphs_refinement: true</code> added to Cycle18 oracle-audit configs so <code>cluster_segments_sec</code> is exported</td><td>Run Cycle18 oracle audits, then generate TAG Table-13-style fragmentation tables with <code>src/utils/paper_audit_stratification.py</code></td></tr>
 <tr><td>MISSING</td><td>Failure cases</td><td>Not yet curated</td><td>Add 8-12 qualitative successes/failures</td></tr>
-<tr><td>READY</td><td>Separate LLM table</td><td>LLM-assisted Charades table is separate from no-LLM tracks; ActivityNet old-TAG proposal-pool YAML added at <code>experiments/cycle18/13_config_cycle18_activitynet_paper_llm_old_tag.yaml</code></td><td>Run ActivityNet LLM old-TAG proposal-pool only if we want a separate assisted ActivityNet row</td></tr>
+<tr><td>PARTIAL</td><td>Separate LLM table</td><td>LLM-assisted Charades table is complete; ActivityNet old-TAG proposal-pool YAML exists but no completed Cycle18 result listed here</td><td>Run ActivityNet LLM old-TAG proposal-pool only if we want a separate assisted ActivityNet row</td></tr>
 </tbody></table></div>
 <h3>Priority 3: Nice to Have</h3>
 <div class="table-wrap"><table>
@@ -754,7 +919,7 @@ When plugged into old TAG-style LLM proposal pooling, the same architecture reac
 <tr><td>PARTIAL</td><td>Statistical repeatability or deterministic audit</td><td>We have deterministic full-run summaries, but no formal repeatability paragraph/table</td></tr>
 <tr><td>PARTIAL</td><td>Sensitivity plots for beta/window/k/r</td><td>Sweeps exist; need plot/table formatting for paper</td></tr>
 <tr><td>PARTIAL</td><td>OOD unseen queries / Charades-CG</td><td>Cycle16 has novel word and novel composition evidence</td></tr>
-<tr><td>READY</td><td>With/without LLM augmentation</td><td><code>cycle17/12_charades_onset_abs_llm_outputs</code> shows Charades standard vs LLM variants; <code>cycle18/13_config_cycle18_activitynet_paper_llm_old_tag.yaml</code> adds ActivityNet old-TAG-only check</td></tr>
+<tr><td>PARTIAL</td><td>With/without LLM augmentation</td><td><code>cycle17/12_charades_onset_abs_llm_outputs</code> shows Charades standard vs LLM variants; <code>cycle18/13_config_cycle18_activitynet_paper_llm_old_tag.yaml</code> adds ActivityNet old-TAG-only check</td></tr>
 <tr><td>MISSING</td><td>Method figure showing TAG candidate pool -&gt; numeric confirmation -&gt; final selection</td><td>Create figure</td></tr>
 <tr><td>MISSING</td><td>Public config appendix</td><td>Create appendix table with final config values and experiment folder references</td></tr>
 </tbody></table></div>
@@ -766,12 +931,14 @@ When plugged into old TAG-style LLM proposal pooling, the same architecture reac
 </ol>
 <pre><code>Datasets: Charades + ActivityNet
 Rows: TAG baseline, universal no-LLM current method, Charades qsim extension where applicable
-Metrics: Top-1 mIoU, oracle@3, oracle@5, oracle@10, ranking gap</code></pre>
+Metrics: Top-1 mIoU, oracle@3, oracle@5, oracle@10, ranking gap
+Status: Cycle18 diagnostic runs exist; extract the oracle columns from results/raw audit.</code></pre>
 <ol>
 <li><strong>Final locked OOD suite</strong></li>
 </ol>
-<pre><code>Charades universal no-LLM: rerun standard, test_ood/Charades-CD, novel word, novel composition, pad/noise on exact onset_abs recipe.
-ActivityNet universal no-LLM: already has rho30/rho60 and pad30/pad60; add only if a missing official split is needed.</code></pre>
+<pre><code>ActivityNet universal no-LLM: completed for rho30/rho60 and pad30/pad60.
+Charades universal no-LLM: completed for standard, pad10/pad15, rho10/rho15.
+Still missing: rerun only Charades-CD, novel word, and novel composition after fixing Kaggle annotation paths.</code></pre>
 <ol>
 <li><strong>Final module-removal table</strong></li>
 </ol>
@@ -780,14 +947,16 @@ ActivityNet universal no-LLM: already has rho30/rho60 and pad30/pad60; add only 
 - no Cohen&#x27;s d scoring
 - no DA-NMS
 - no normalized clustering
-- no modern refinement</code></pre>
+- no modern refinement
+Status: Cycle18 Charades removal table completed; ActivityNet module-control table covers the equivalent alternatives.</code></pre>
 <ol>
 <li><strong>Runtime/cost table</strong></li>
 </ol>
 <pre><code>TAG baseline
 Universal no-LLM method
 Charades qsim extension
-LLM-assisted old_tag_proposal_pool</code></pre>
+LLM-assisted old_tag_proposal_pool
+Status: Cycle18 Priority-2 diagnostics completed for TAG/universal/qsim rows; extract time from results.json. LLM rows still need completed run if included.</code></pre>
 <ol>
 <li><strong>Analysis-only tables and figures</strong></li>
 </ol>
@@ -799,7 +968,7 @@ Config appendix</code></pre>
 <hr>
 <h2>Recommended Paper Position</h2>
 <p>Use this language:</p>
-<blockquote>We do not replace TAG&#x27;s candidate-generation philosophy. Instead, we show that TAG-style zero-shot VTG leaves a large final-selection gap: high-quality candidates often exist in the top-k pool but are not selected as top-1. We introduce lightweight numeric confirmation modules that improve final candidate selection without training and without LLMs. Query-similarity pooling is presented as a Charades-specific semantic smoothing extension, while LLM proposal pooling is reported separately as an assisted setting.</blockquote>
+<p>&gt; We do not replace TAG&#x27;s candidate-generation philosophy. Instead, we show that TAG-style zero-shot VTG leaves a large final-selection gap: high-quality candidates often exist in the top-k pool but are not selected as top-1. We introduce lightweight numeric confirmation modules that improve final candidate selection without training and without LLMs. Query-similarity pooling is presented as a Charades-specific semantic smoothing extension, while LLM proposal pooling is reported separately as an assisted setting.</p>
 <p>Avoid this language:</p>
 <pre><code>We tune TAG.
 We use LLMs for the main method.
